@@ -1,0 +1,43 @@
+baseURL = 'https://saisneha.com/'
+languageCode = 'en-us'
+title = 'hurtling through space'
+theme = "hugo-theme-minos"
+
+[permalinks]
+  [permalinks.page]
+    posts = '/:year/:month/:slug/'
+  [permalinks.section]
+    posts = '/posts/'
+
+[taxonomies]
+    series = "series"
+    tags = "tags"
+
+[menus]
+  [[menus.main]]
+    name = 'Series'
+    pageRef = '/series/'
+    weight = 50
+  [[menus.main]]
+    name = 'VHoIP'
+    pageRef = '/series/vhoip/'
+    weight = 20
+  [[menus.main]]
+    name = 'De-FAANG'
+    pageRef = '/series/de-faang/'
+    weight = 30
+  [[menus.main]]
+    name = 'About'
+    pageRef = '/about/'
+    weight = 10
+  [[menus.main]]
+    name = 'Archive'
+    pageRef = '/posts/'
+    weight = 60
+
+[params.author]
+name = "Sneha S"
+email = "blogging@saisneha.com"
+
+[params]
+  smartToc = true
