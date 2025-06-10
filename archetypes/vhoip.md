@@ -1,6 +1,6 @@
 +++
 title = '{{ replace .File.ContentBaseName "-" " " | title }}'
 date = {{ .Date }}
-series = ["voip"]
+series = ["VHoIP"]
 draft = true
 +++

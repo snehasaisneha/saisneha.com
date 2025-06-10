@@ -87,6 +87,6 @@ I hope to see you that day. Until then, all my love is yours, forever and always
 
 ---
 
-Note: Some of the imagery in this piece is inspired by Abigail Thorn of Philosophy Tube’s video titled [Suic!de and Ment@l He@lth](https://youtu.be/eQNw2FBdpyE) from September of 2018. It is a heartbreakingly beautiful video, and I highly recommend you watch it.
+Note: Some of the imagery in this piece is inspired by Abigail Thorn of Philosophy Tube’s video titled [Suicide and Mental Health](https://youtu.be/eQNw2FBdpyE) from September of 2018. It is a heartbreakingly beautiful video, and I highly recommend you watch it.
 
 I wrote a [follow up](the_agony_and_the_ecstasy) to this piece almost a year after I wrote this one. 
