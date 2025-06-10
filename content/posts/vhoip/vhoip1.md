@@ -2,7 +2,7 @@
 title = 'VHoIP #1: Seeking out Boredom; Call your Friends!'
 date = 2025-04-05T11:02:13+05:30
 series = ["VhoIP"]
-slug = ["seeking_out_boredom_and_call_your_friends_vhoip_1"]
+slug = "seeking_out_boredom_and_call_your_friends_vhoip_1"
 +++
 
 I often have a lot I'd like to write about - not necessarily because I have something incredibly unique to offer, but often to just get my thoughts on to paper - often physical paper, and make sense of them.
