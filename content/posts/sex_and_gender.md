@@ -43,7 +43,7 @@ This leads to my second point: Social constructs have real world impacts. How we
 
 I’ve used astronomy, physics, and mathematics examples to talk about social constructs because it is easier to explain, and its also less controversial to talk about planets, inches and centimetres, Newtons and pound-forces. It changes considerably when we talk about sex and gender.
 
-I’m not going to go through the motions and give you their definitions. You can find them here (sex and gender from the Merriam-Webster Dictionary.) 
+I’m not going to go through the motions and give you their definitions. You can find them here ([sex](https://archive.is/9UWN0) and [gender](https://archive.is/LVJx3) from the Merriam-Webster Dictionary.) 
 
 When most people refer to sex, they’re referring to “biological sex”, and the implication usually being that gender is about your identity and expression, while sex is your innate biology. But what is innate biology?
 
