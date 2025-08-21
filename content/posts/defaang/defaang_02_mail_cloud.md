@@ -24,7 +24,7 @@ The only options I seriously considered were Proton and Fastmail - for simplicit
 
 For all these reasons, Fastmail was the clear winner. There are a few issues I take with Fastmail - it doesn't offer a desktop client for the drive, for one. It also has weird quirks wrt folders vs labels, only letting you pick one. It's also almost certainly not what someone from the infosec community would recommend. It's a consumer facing service - first and foremost, while Proton is, at least currently, an enthusiast product. I think I'm simply not that much of an enthusiast at the moment. Fastmail also has a reliable 25 year history, to Proton's 10 years.
 
-So - I've picked Fastmail and have made the switch to it, switching a lot of my major services there already, and autoforwarding my current email there. I expect a full transition will take 3-6 months (there are bank emails and govt websites to make the changes on - and I am not in the biggest hurry to change everything in a day), but this is a great start. You can drop me a line at [blogging@saisneha.com](mailto:blogging@saisneha.com)!
+So - I've picked Fastmail and have made the switch to it, switching a lot of my major services there already, and autoforwarding my current email there. I expect a full transition will take 3-6 months (there are bank emails and govt websites to make the changes on - and I am not in the biggest hurry to change everything in a day), but this is a great start. You can drop me a line at blogging (AT) (THIS DOMAIN DOT COM)!
 
 Using a custom domain also allows me to migrate if and when I decide to. Another part of my plan will be to ruthlessly delete emails that aren't relevant to me anymore, an exercise that can be partially automated and partially needs to be manual. 
 
@@ -62,7 +62,7 @@ There's a lot of different things left to do, and I am in no mood to rush things
 1. **Calendar** - preferably self hosted, let's me send evites and rsvp's from my own server, allows me to use a CalDav compatible client.
 2. **Finalise Cloud Storage** - there's going to be lots of experimentation here, do stay tuned for special episodes focusing on specific technical problems.
 3. **Self Hosted End-to-end-Encrypted Jitsi Instance**: Self explanatory. I want an instance that also supports authentication, so only I can start a meeting.
-4. **Messaging** - leave WhatsApp once and for all! I want to make WhatsApp a place for logistics and planning, and move all important convos/gc's away from it - this is very ambitious but I am weirdly hopeful.
+4. **Messaging** - leave WhatsApp once and for all! I want to make WhatsApp a place for logistics and planning, and move all important convos/gc's away from it - this is very ambitious but I am hopeful.
 5. **Browser**: I've been using Arc Browser for a while, and have switched up my default search engine to DuckDuckGo. But I also want to leave the Chromium world - and so exploring the best options there.
 6. **VS Code**: I want to leave VS Code, even though I've disabled the telemetry settings. I'd like to use a community fork, like [VS Codium](https://vscodium.com/).
 7. **Adding email support to this newsletter!**: I want to add a way for people to subscribe to this website, and make the final migration away from substack. Doing this in a way that doesn't share people's emails with any unsavoury third parties - that's the reason for the hold up. I'm exploring a few options. I also want to eventually add comment support. Currently, you can sign up using the atom feed [here](https://saisneha.com/posts/index.xml).
@@ -70,6 +70,6 @@ There's a lot of different things left to do, and I am in no mood to rush things
 
 Phew. It's been a couple of weeks packed with work, but this has been a fun side exercise to keep up at. I've enjoyed it. Thanks for reading a fairly long ramble.
 
-Next time - I hope to have better answers on the cloud side, and some solid feedback on Ente photos. Drop me any comments at [blogging@saisneha.com](mailto:blogging@saisneha.com), I'd definitely appreciate it.
+Next time - I hope to have better answers on the cloud side, and some solid feedback on Ente photos. Drop me any comments at blogging (AT) (THIS DOMAIN DOT COM), I'd definitely appreciate it.
 
 Until then!
