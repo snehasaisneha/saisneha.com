@@ -1,4 +1,5 @@
-baseURL = 'https://saisneha.com/'
+baseURL = '/blog/'
+relativeURLs = true
 languageCode = 'en-us'
 title = 'hurtling through space'
 theme = "hugo-theme-minos"
