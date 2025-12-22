@@ -1,8 +1,8 @@
 {
-    "scripts": {
-      "install:astro": "cd astro-site && npm install",
-      "build:hugo": "cd hugo-blog && hugo --destination ../astro-site/public/blog",
-      "build:astro": "cd astro-site && npm run build",
-      "build": "npm run build:hugo && npm run build:astro"
-    }
-  }
+  "scripts": {
+  "install:astro": "cd astro-site && npm install",
+  "build:hugo": "cd hugo-blog && hugo --destination ../astro-site/public/blog",
+  "build:astro": "cd astro-site && npm run build",
+  "build": "npm run install:astro && npm run build:hugo && npm run build:astro"
+}
+}
