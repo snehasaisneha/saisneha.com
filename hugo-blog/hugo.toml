@@ -1,5 +1,6 @@
 baseURL = '/blog/'
 relativeURLs = true
+canonifyURLs = true
 languageCode = 'en-us'
 title = 'hurtling through space'
 theme = "hugo-theme-minos"
