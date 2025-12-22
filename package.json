@@ -1,0 +1,7 @@
+{
+    "scripts": {
+      "build:hugo": "cd hugo-blog && hugo --destination ../astro-site/public/blog",
+      "build:astro": "cd astro-site && npm run build",
+      "build": "npm run build:hugo && npm run build:astro"
+    }
+  }
