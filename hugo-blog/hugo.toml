@@ -1,5 +1,4 @@
-baseURL = '/blog'
-relativeURLs = true
+baseURL = 'https://saisneha.com/blog/'
 canonifyURLs = true
 languageCode = 'en-us'
 title = 'hurtling through space'
