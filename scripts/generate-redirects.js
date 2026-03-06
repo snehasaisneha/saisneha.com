@@ -25,7 +25,13 @@ const linkLines = linkEntries
   .map(([slug, url]) => `/links/${slug}  ${url}  302`)
   .join('\n');
 
-const newRedirects = [linkLines, existing].filter(Boolean).join('\n');
+// Keep only non-/links/ lines from existing (so we don't duplicate on each run)
+const staticRules = existing
+  .split('\n')
+  .filter((line) => line.trim() && !line.trimStart().startsWith('/links/'))
+  .join('\n');
+
+const newRedirects = [linkLines, staticRules].filter(Boolean).join('\n');
 fs.writeFileSync(REDIRECTS_PATH, newRedirects.trimEnd() + '\n', 'utf8');
 
 console.log('Generated %d link redirect(s) in static/_redirects', linkEntries.length);
