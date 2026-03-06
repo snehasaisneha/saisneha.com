@@ -6,6 +6,14 @@ This is a simple static website based on the [```Minos theme for Hugo by carsonj
 
 It uses hugo version ```0.128.0```, which necessitated some changes to the base theme.
 
+### Short links (redirects)
+
+URLs like `saisneha.com/links/ttt-2026-03` redirect to external URLs. To add or change a link:
+
+1. Edit `data/links.json` and add a slug and destination URL, e.g. `"my-slug": "https://github.com/..."`.
+2. Run `node scripts/generate-redirects.js` (or rely on Netlify build, which runs it before Hugo).
+3. Build/deploy. Visiting `/links/my-slug` will 302-redirect to the URL.
+
 
 
 

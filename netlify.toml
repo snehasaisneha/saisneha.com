@@ -1,0 +1,3 @@
+[build]
+  command = "node scripts/generate-redirects.js && hugo"
+  publish = "public"
