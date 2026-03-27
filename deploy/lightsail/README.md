@@ -70,6 +70,7 @@ You need to set all of these before startup:
 - `SMTP_PASSWORD`
 - `REMARK42_SECRET`
 - `REMARK42_ADMIN_PASSWORD`
+- `REMARK42_ADMIN_SHARED_ID`
 - `REMARK42_AUTH_ANON`
 - `REMARK42_GITHUB_CLIENT_ID`
 - `REMARK42_GITHUB_CLIENT_SECRET`
@@ -77,6 +78,15 @@ You need to set all of these before startup:
 - `REMARK42_GOOGLE_CLIENT_SECRET`
 
 Use one generated random value for `REMARK42_SECRET` and another for `REMARK42_ADMIN_PASSWORD`.
+
+`REMARK42_ADMIN_SHARED_ID` is the actual admin identity Remark42 uses inside the widget. To get it:
+
+- sign in to comments with your chosen provider
+- click your username or avatar in the widget
+- copy the full shared ID Remark42 shows you
+- place that value in `.env`
+
+Without `REMARK42_ADMIN_SHARED_ID`, provider login works, but Remark42 will not recognize that user as an admin in the UI.
 
 ## 3. Start the services
 
