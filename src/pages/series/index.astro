@@ -1,0 +1,42 @@
+---
+import { getCollection } from "astro:content";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Layout from "@/layouts/Layout.astro";
+import Main from "@/layouts/Main.astro";
+import getSortedPosts from "@/utils/getSortedPosts";
+import { slugifyStr } from "@/utils/slugify";
+
+const allPosts = getSortedPosts(
+  await getCollection("blog", ({ data }) => !data.draft)
+);
+const series = await getCollection("series");
+
+const seriesWithCounts = series.map(item => ({
+  ...item,
+  count: allPosts.filter(post =>
+    (post.data.series ?? []).some(name => slugifyStr(name) === item.id)
+  ).length,
+}));
+---
+
+<Layout title="Series">
+  <Header />
+  <Main pageTitle="Series" pageDesc="Collections of related posts.">
+    <ul class="space-y-8">
+      {seriesWithCounts.map(item => (
+        <li class="rounded-2xl border border-border px-5 py-4">
+          <a
+            href={`/series/${item.id}/`}
+            class="text-xl font-semibold text-accent underline decoration-dashed underline-offset-4"
+          >
+            {item.data.title}
+          </a>
+          <p class="mt-2 text-sm">{item.count} posts</p>
+          {item.data.description && <p class="mt-3">{item.data.description}</p>}
+        </li>
+      ))}
+    </ul>
+  </Main>
+  <Footer />
+</Layout>

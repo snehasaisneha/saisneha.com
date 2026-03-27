@@ -1,0 +1,40 @@
+---
+import { getCollection } from "astro:content";
+import postFilter from "@/utils/postFilter";
+import { getPath } from "@/utils/getPath";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+
+  return posts.filter(postFilter).map(post => {
+    const year = String(post.data.pubDatetime.getFullYear());
+    const month = String(post.data.pubDatetime.getMonth() + 1).padStart(2, "0");
+    const slug = post.id.split("/").at(-1) ?? post.id;
+
+    return {
+      params: { year, month, slug },
+      props: { target: getPath(post.id, post.filePath, true, post.data.pubDatetime) },
+    };
+  });
+}
+
+const { target } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>Redirecting…</title>
+    <script is:inline>
+      {`window.location.replace(${JSON.stringify(target)});`}
+    </script>
+  </head>
+  <body>
+    <p>
+      Redirecting to <a href={target}>{target}</a>.
+    </p>
+  </body>
+</html>

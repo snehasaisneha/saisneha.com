@@ -1,0 +1,45 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Layout from "@/layouts/Layout.astro";
+import Main from "@/layouts/Main.astro";
+import Card from "@/components/Card.astro";
+import getSortedPosts from "@/utils/getSortedPosts";
+import { slugifyStr } from "@/utils/slugify";
+import { SITE } from "@/config";
+
+type Props = {
+  series: CollectionEntry<"series">;
+};
+
+export async function getStaticPaths() {
+  const series = await getCollection("series");
+  return series.map(item => ({
+    params: { slug: item.id },
+    props: { series: item },
+  }));
+}
+
+const { series } = Astro.props;
+const allPosts = getSortedPosts(
+  await getCollection("blog", ({ data }) => !data.draft)
+);
+const seriesPosts = allPosts.filter(post =>
+  (post.data.series ?? []).some(name => slugifyStr(name) === series.id)
+);
+const { Content } = await render(series);
+---
+
+<Layout title={`${series.data.title} | ${SITE.title}`}>
+  <Header />
+  <Main pageTitle={series.data.title} pageDesc={`${seriesPosts.length} posts`}>
+    <article class="app-prose mb-8">
+      <Content />
+    </article>
+    <ul>
+      {seriesPosts.map(post => <Card {...post} />)}
+    </ul>
+  </Main>
+  <Footer />
+</Layout>
