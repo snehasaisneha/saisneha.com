@@ -90,16 +90,52 @@ const enabled = Boolean(apiBase && listUuid);
                   }),
                 });
 
+                const contentType = response.headers.get("content-type") ?? "";
+                let responseMessage = "";
+
+                if (contentType.includes("application/json")) {
+                  try {
+                    const payload = await response.json();
+                    responseMessage =
+                      payload?.message ||
+                      (typeof payload?.data === "string" ? payload.data : "");
+                  } catch {
+                    responseMessage = "";
+                  }
+                } else {
+                  responseMessage = (await response.text()).trim();
+                }
+
                 if (!response.ok) {
-                  throw new Error("Subscription request failed");
+                  const normalized = responseMessage.toLowerCase();
+
+                  if (
+                    normalized.includes("already subscribed") ||
+                    normalized.includes("already exists") ||
+                    normalized.includes("unconfirmed")
+                  ) {
+                    status.textContent =
+                      "You are already in the subscription flow. Check your inbox for the confirmation email.";
+                    form.reset();
+                    return;
+                  }
+
+                  throw new Error(responseMessage || "Subscription request failed");
                 }
 
                 status.textContent =
                   "Check your inbox if confirmation is enabled, otherwise you should be subscribed now.";
                 form.reset();
-              } catch (_error) {
-                status.textContent =
-                  "That did not go through. Please try again in a moment.";
+              } catch (error) {
+                if (error instanceof TypeError) {
+                  status.textContent =
+                    "The request may have gone through, but the browser could not verify the response. Check your inbox, then try again if nothing arrives.";
+                } else if (error instanceof Error && error.message) {
+                  status.textContent = error.message;
+                } else {
+                  status.textContent =
+                    "That did not go through. Please try again in a moment.";
+                }
               } finally {
                 button.disabled = false;
               }
