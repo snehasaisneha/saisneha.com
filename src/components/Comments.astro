@@ -1,0 +1,48 @@
+---
+import {
+  PUBLIC_REMARK42_HOST,
+  PUBLIC_REMARK42_SITE_ID,
+} from "astro:env/client";
+
+type Props = {
+  pageTitle: string;
+  pageUrl?: string;
+};
+
+const { pageTitle, pageUrl } = Astro.props;
+const host = PUBLIC_REMARK42_HOST?.replace(/\/$/, "") ?? "";
+const siteId = PUBLIC_REMARK42_SITE_ID ?? "";
+const canonicalUrl =
+  pageUrl ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+const enabled = Boolean(host && siteId);
+---
+
+{
+  enabled && (
+    <section class="mt-10 space-y-4 border-t border-dashed border-border pt-8">
+      <h2 class="text-xl font-semibold text-foreground">Comments</h2>
+      <div id="remark42"></div>
+      <script
+        is:inline
+        set:html={`
+          window.remark_config = {
+            host: ${JSON.stringify(host)},
+            site_id: ${JSON.stringify(siteId)},
+            components: ["embed"],
+            url: ${JSON.stringify(canonicalUrl)},
+            page_title: ${JSON.stringify(pageTitle)},
+            theme: document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light"
+          };
+
+          if (!document.getElementById("remark42-script")) {
+            const script = document.createElement("script");
+            script.id = "remark42-script";
+            script.defer = true;
+            script.src = ${JSON.stringify(`${host}/web/embed.js`)};
+            document.head.appendChild(script);
+          }
+        `}
+      ></script>
+    </section>
+  )
+}

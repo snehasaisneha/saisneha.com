@@ -1,0 +1,114 @@
+---
+import {
+  PUBLIC_LISTMONK_LIST_UUID,
+  PUBLIC_LISTMONK_URL,
+} from "astro:env/client";
+
+const apiBase = PUBLIC_LISTMONK_URL?.replace(/\/$/, "") ?? "";
+const listUuid = PUBLIC_LISTMONK_LIST_UUID ?? "";
+const enabled = Boolean(apiBase && listUuid);
+---
+
+{
+  enabled && (
+    <section class="space-y-4">
+      <div class="space-y-2">
+        <h2 class="text-lg font-semibold text-foreground">Mailing list</h2>
+        <p class="text-sm leading-7 text-foreground/75">
+          Get new posts by email without going through Substack.
+        </p>
+      </div>
+      <form
+        class="newsletter-form space-y-3"
+        data-listmonk-form
+        data-api-base={apiBase}
+        data-list-uuid={listUuid}
+      >
+        <div class="grid gap-3 sm:grid-cols-2">
+          <label class="space-y-1">
+            <span class="text-sm text-foreground/75">Name</span>
+            <input
+              type="text"
+              name="name"
+              autocomplete="name"
+              class="w-full rounded-xl border border-border bg-background px-3 py-2"
+            />
+          </label>
+          <label class="space-y-1">
+            <span class="text-sm text-foreground/75">Email</span>
+            <input
+              type="email"
+              name="email"
+              autocomplete="email"
+              required
+              class="w-full rounded-xl border border-border bg-background px-3 py-2"
+            />
+          </label>
+        </div>
+        <button
+          type="submit"
+          class="rounded-full border border-border px-4 py-2 text-sm font-medium hover:border-accent hover:text-accent"
+        >
+          Subscribe
+        </button>
+        <p class="newsletter-status text-sm text-foreground/70" aria-live="polite"></p>
+      </form>
+
+      <script is:inline data-astro-rerun>
+        function attachListmonkForms() {
+          const forms = document.querySelectorAll("[data-listmonk-form]");
+
+          for (const form of forms) {
+            if (form.dataset.bound === "true") continue;
+            form.dataset.bound = "true";
+
+            form.addEventListener("submit", async event => {
+              event.preventDefault();
+
+              const apiBase = form.getAttribute("data-api-base");
+              const listUuid = form.getAttribute("data-list-uuid");
+              const status = form.querySelector(".newsletter-status");
+              const button = form.querySelector('button[type="submit"]');
+              const nameInput = form.querySelector('input[name="name"]');
+              const emailInput = form.querySelector('input[name="email"]');
+
+              if (!apiBase || !listUuid || !emailInput || !status || !button) return;
+
+              button.disabled = true;
+              status.textContent = "Subscribing...";
+
+              try {
+                const response = await fetch(`${apiBase}/api/public/subscription`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    email: emailInput.value,
+                    name: nameInput?.value || "",
+                    list_uuids: [listUuid],
+                  }),
+                });
+
+                if (!response.ok) {
+                  throw new Error("Subscription request failed");
+                }
+
+                status.textContent =
+                  "Check your inbox if confirmation is enabled, otherwise you should be subscribed now.";
+                form.reset();
+              } catch (_error) {
+                status.textContent =
+                  "That did not go through. Please try again in a moment.";
+              } finally {
+                button.disabled = false;
+              }
+            });
+          }
+        }
+
+        attachListmonkForms();
+      </script>
+    </section>
+  )
+}

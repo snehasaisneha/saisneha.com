@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: listmonk_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${LISTMONK_DB_NAME}
+      POSTGRES_USER: ${LISTMONK_DB_USER}
+      POSTGRES_PASSWORD: ${LISTMONK_DB_PASSWORD}
+      TZ: ${TZ}
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${LISTMONK_DB_USER} -d ${LISTMONK_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  listmonk:
+    image: listmonk/listmonk:latest
+    container_name: listmonk_app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:9000:9000"
+    environment:
+      TZ: ${TZ}
+      LISTMONK_app__address: 0.0.0.0:9000
+      LISTMONK_app__site_url: https://${LISTMONK_DOMAIN}
+      LISTMONK_app__message_url: https://${LISTMONK_DOMAIN}
+      LISTMONK_db__host: postgres
+      LISTMONK_db__port: 5432
+      LISTMONK_db__database: ${LISTMONK_DB_NAME}
+      LISTMONK_db__user: ${LISTMONK_DB_USER}
+      LISTMONK_db__password: ${LISTMONK_DB_PASSWORD}
+      LISTMONK_db__ssl_mode: disable
+      LISTMONK_admin_username: ${LISTMONK_ADMIN_USER}
+      LISTMONK_admin_password: ${LISTMONK_ADMIN_PASSWORD}
+      LISTMONK_app__from_email: ${LISTMONK_FROM_EMAIL}
+      LISTMONK_app__root_url: https://${LISTMONK_DOMAIN}
+      LISTMONK_app__logo_url: ""
+      LISTMONK_app__favicon_url: ""
+      LISTMONK_uploads__provider: filesystem
+      LISTMONK_uploads__filesystem__upload_path: /listmonk/uploads
+      LISTMONK_smtp__enabled: "true"
+      LISTMONK_smtp__host: ${SMTP_HOST}
+      LISTMONK_smtp__port: ${SMTP_PORT}
+      LISTMONK_smtp__username: ${SMTP_USER}
+      LISTMONK_smtp__password: ${SMTP_PASSWORD}
+      LISTMONK_smtp__tls_enabled: "true"
+      LISTMONK_smtp__auth_method: plain
+      LISTMONK_smtp__hello_hostname: ${SMTP_HELO_HOSTNAME}
+    command: [sh, -c, "./listmonk --install --idempotent --yes && ./listmonk --upgrade --yes && ./listmonk"]
+    volumes:
+      - ./volumes/listmonk-uploads:/listmonk/uploads
+
+  remark42:
+    image: umputun/remark42:latest
+    container_name: remark42
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      TZ: ${TZ}
+      REMARK_URL: https://${REMARK42_DOMAIN}
+      SITE: ${REMARK42_SITE_ID}
+      SECRET: ${REMARK42_SECRET}
+      AUTH_ANON: "true"
+      ADMIN_SHARED_ID: ${REMARK42_ADMIN_SHARED_ID}
+      STORE_BOLT_PATH: /srv/var/db
+    command: server
+    volumes:
+      - ./volumes/remark42:/srv/var

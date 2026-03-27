@@ -1,5 +1,6 @@
 ---
 import type { HTMLAttributes } from "astro/types";
+import NewsletterForm from "./NewsletterForm.astro";
 import Socials from "./Socials.astro";
 
 const currentYear = new Date().getFullYear();
@@ -15,6 +16,9 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
   class:list={["app-layout", { "mt-auto": !noMarginTop }, className]}
   {...attrs}
 >
+  <div class="mx-auto w-full max-w-3xl border-t border-border py-8">
+    <NewsletterForm />
+  </div>
   <div
     class:list={[
       "py-6 sm:py-4",

@@ -55,6 +55,26 @@ export default defineConfig({
         context: "client",
         optional: true,
       }),
+      PUBLIC_REMARK42_HOST: envField.string({
+        access: "public",
+        context: "client",
+        optional: true,
+      }),
+      PUBLIC_REMARK42_SITE_ID: envField.string({
+        access: "public",
+        context: "client",
+        optional: true,
+      }),
+      PUBLIC_LISTMONK_URL: envField.string({
+        access: "public",
+        context: "client",
+        optional: true,
+      }),
+      PUBLIC_LISTMONK_LIST_UUID: envField.string({
+        access: "public",
+        context: "client",
+        optional: true,
+      }),
     },
   },
   experimental: {
