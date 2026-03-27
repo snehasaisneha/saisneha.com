@@ -2,7 +2,7 @@
 title: Citations and Footnotes Demo
 description: A sample post exercising inline citations and notes with hover previews.
 pubDatetime: 2026-03-27T09:00:00+05:30
-draft: false
+draft: true
 tags:
   - demo
   - writing
