@@ -70,8 +70,11 @@ You need to set all of these before startup:
 - `SMTP_PASSWORD`
 - `REMARK42_SECRET`
 - `REMARK42_ADMIN_PASSWORD`
+- `REMARK42_AUTH_ANON`
 - `REMARK42_GITHUB_CLIENT_ID`
 - `REMARK42_GITHUB_CLIENT_SECRET`
+- `REMARK42_GOOGLE_CLIENT_ID`
+- `REMARK42_GOOGLE_CLIENT_SECRET`
 
 Use one generated random value for `REMARK42_SECRET` and another for `REMARK42_ADMIN_PASSWORD`.
 
@@ -103,9 +106,12 @@ Remark42 currently expects:
 - at least one auth provider pair
 
 This deployment bundle uses GitHub auth plus anonymous comments, so you must fill:
+This deployment bundle supports GitHub auth, Google auth, and configurable anonymous comments. You must fill:
 
 - `REMARK42_GITHUB_CLIENT_ID`
 - `REMARK42_GITHUB_CLIENT_SECRET`
+- `REMARK42_GOOGLE_CLIENT_ID`
+- `REMARK42_GOOGLE_CLIENT_SECRET`
 
 ## 4. Configure nginx
 
@@ -163,6 +169,20 @@ Then put the resulting values into:
 - `REMARK42_GITHUB_CLIENT_ID`
 - `REMARK42_GITHUB_CLIENT_SECRET`
 
+## 6b. Configure Google OAuth for Remark42
+
+Create a Google OAuth client in Google Cloud Console.
+
+Use:
+
+- Authorized JavaScript origin: `https://comments.saisneha.com`
+- Authorized redirect URI: `https://comments.saisneha.com/auth/google/callback`
+
+Then put the resulting values into:
+
+- `REMARK42_GOOGLE_CLIENT_ID`
+- `REMARK42_GOOGLE_CLIENT_SECRET`
+
 ## 7. Configure website env vars
 
 Set these in Netlify for the site:
@@ -181,6 +201,8 @@ The website code already supports these env vars.
 - Forward Email should be configured on `mailer.saisneha.com`, not the root mail domain.
 - `newsletter@mailer.saisneha.com` should be used as the sending address.
 - `comments.saisneha.com` does not need SMTP to work initially unless you later want email notifications from Remark42.
-- Remark42 is configured here with GitHub login plus anonymous comments. This is a practical starting point because it gives you a real moderator identity while still letting drive-by readers comment anonymously.
+- Remark42 is configured here with GitHub login, Google login, and env-driven anonymous comments.
+- If you want logged-in comments only, set `REMARK42_AUTH_ANON=false`.
+- If you want guest comments allowed, set `REMARK42_AUTH_ANON=true`.
 - Upgrade listmonk by pulling the new image and re-running the app container. See:
   - https://listmonk.app/docs/upgrade/
