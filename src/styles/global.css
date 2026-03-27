@@ -115,7 +115,7 @@ html[data-theme="dark"] {
 }
 
 .comments-shell {
-  @apply rounded-2xl border border-border bg-background/80 p-4 shadow-sm sm:p-6;
+  @apply pt-1;
 }
 
 .comments-shell #remark42 {
@@ -160,6 +160,48 @@ html[data-theme="dark"] {
 
 .comments-shell :where([class*="avatar"]) {
   @apply rounded-full;
+}
+
+.comments-shell :where(.remark42__widget, .remark42__container, .remark42__embed, .remark42__body, .remark42__comments, .remark42__editor, .remark42__toolbar, .remark42__footer, .comment, .comment-form) {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.comments-shell :where(.remark42__editor, .comment-form, textarea, input, [contenteditable="true"]) {
+  border-color: var(--color-border) !important;
+  border-radius: 1rem !important;
+  background-color: transparent !important;
+}
+
+.comments-shell :where(button, .btn, [role="button"]) {
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease !important;
+}
+
+.comments-shell :where(.btn-primary, .primary, button[type="submit"], .remark42__btn_primary, .remark42__login-button) {
+  background-color: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+  color: #fff !important;
+}
+
+.comments-shell :where(.btn-primary:hover, .primary:hover, button[type="submit"]:hover, .remark42__btn_primary:hover, .remark42__login-button:hover) {
+  filter: brightness(0.95);
+}
+
+.comments-shell :where(.remark42__toolbar button, .remark42__sort button, .remark42__controls button, button:not([type="submit"])) {
+  color: var(--color-accent) !important;
+}
+
+.comments-shell :where(svg, .icon) {
+  color: currentColor !important;
+  fill: currentColor;
+}
+
+.comments-shell :where(.remark42__powered-by, .remark42__footer, .remark42__hint, .remark42__sort, .remark42__counter) {
+  color: color-mix(in srgb, var(--color-foreground) 72%, transparent) !important;
 }
 
 .heading-link {
