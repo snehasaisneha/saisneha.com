@@ -114,6 +114,66 @@ html[data-theme="dark"] {
   @apply text-foreground/55;
 }
 
+.comments-shell {
+  @apply rounded-2xl border border-border bg-background/80 p-4 shadow-sm sm:p-6;
+}
+
+.comments-shell #remark42 {
+  @apply text-foreground;
+}
+
+.comments-shell :where(h1, h2, h3, h4, h5, h6) {
+  @apply font-app text-foreground;
+}
+
+.comments-shell :where(p, li, label, small, span) {
+  @apply text-foreground/85;
+}
+
+.comments-shell :where(a) {
+  @apply text-accent underline decoration-dashed underline-offset-4;
+}
+
+.comments-shell :where(input, textarea, select) {
+  @apply w-full rounded-xl border border-border bg-background px-3 py-2 text-foreground shadow-none;
+}
+
+.comments-shell :where(textarea) {
+  @apply min-h-32;
+}
+
+.comments-shell :where(button) {
+  @apply rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-accent hover:text-accent;
+}
+
+.comments-shell :where(hr) {
+  @apply border-border;
+}
+
+.comments-shell :where(blockquote, pre, code) {
+  @apply rounded-xl bg-muted/35;
+}
+
+.comments-shell :where([class*="comment"], [class*="reply"], [class*="thread"]) {
+  @apply border-border;
+}
+
+.comments-shell :where([class*="avatar"]) {
+  @apply rounded-full;
+}
+
+.heading-link {
+  @apply relative ms-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-sm font-medium text-accent/80 no-underline transition-all hover:text-accent focus-visible:text-accent;
+}
+
+.heading-link[data-copied="true"] {
+  @apply bg-muted text-accent;
+}
+
+.heading-link-status {
+  @apply text-xs tracking-[0.08em] uppercase;
+}
+
 /* Source: https://piccalil.li/blog/a-more-modern-css-reset/ */
 /* Anything that has been anchored to should have extra scroll margin */
 :target {

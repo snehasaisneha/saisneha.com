@@ -531,16 +531,44 @@ const nextPost =
       document.querySelectorAll("h2, h3, h4, h5, h6")
     );
     for (const heading of headings) {
+      if (!heading.id || heading.querySelector(".heading-link")) continue;
       heading.classList.add("group");
       const link = document.createElement("a");
       link.className =
-        "heading-link ms-2 no-underline opacity-75 md:opacity-0 md:group-hover:opacity-100 md:focus:opacity-100";
+        "heading-link opacity-75 md:opacity-0 md:group-hover:opacity-100 md:focus:opacity-100";
       link.href = "#" + heading.id;
+      link.setAttribute("aria-label", `Copy link to ${heading.textContent?.trim() ?? "section"}`);
 
-      const span = document.createElement("span");
-      span.ariaHidden = "true";
-      span.innerText = "#";
-      link.appendChild(span);
+      const symbol = document.createElement("span");
+      symbol.ariaHidden = "true";
+      symbol.innerText = "#";
+      link.appendChild(symbol);
+
+      const status = document.createElement("span");
+      status.className = "heading-link-status";
+      status.textContent = "Copy";
+      link.appendChild(status);
+
+      link.addEventListener("click", async event => {
+        const permalink = `${window.location.origin}${window.location.pathname}#${heading.id}`;
+        const fallbackHref = `#${heading.id}`;
+
+        try {
+          event.preventDefault();
+          await navigator.clipboard.writeText(permalink);
+          window.history.replaceState({}, "", fallbackHref);
+          link.dataset.copied = "true";
+          status.textContent = "Copied";
+
+          window.setTimeout(() => {
+            link.dataset.copied = "false";
+            status.textContent = "Copy";
+          }, 1400);
+        } catch {
+          window.location.hash = fallbackHref;
+        }
+      });
+
       heading.appendChild(link);
     }
   }
