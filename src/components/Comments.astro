@@ -27,13 +27,61 @@ const enabled = Boolean(host && siteId);
       <script
         is:inline
         set:html={`
+          const parseAccentColor = value => {
+            const trimmed = value.trim();
+
+            if (!trimmed) return null;
+
+            if (trimmed.startsWith("#")) {
+              const hex = trimmed.slice(1);
+              const normalized =
+                hex.length === 3
+                  ? hex
+                      .split("")
+                      .map(char => char + char)
+                      .join("")
+                  : hex;
+
+              if (normalized.length !== 6) return null;
+
+              const rgb = normalized.match(/.{2}/g)?.map(part => parseInt(part, 16));
+              return rgb?.join(",") ?? null;
+            }
+
+            const rgbMatch = trimmed.match(/rgba?\\(([^)]+)\\)/i);
+            if (!rgbMatch) return null;
+
+            return rgbMatch[1]
+              .split(",")
+              .slice(0, 3)
+              .map(part => Math.max(0, Math.min(255, Number.parseFloat(part.trim()) || 0)))
+              .join(",");
+          };
+
+          const scaleRgb = (rgb, factor) =>
+            rgb
+              .split(",")
+              .map(value =>
+                Math.max(0, Math.min(255, Math.round(Number.parseFloat(value.trim()) * factor)))
+              )
+              .join(",");
+
+          const accentValue = getComputedStyle(document.documentElement)
+            .getPropertyValue("--color-accent");
+          const accentRgb = parseAccentColor(accentValue) ?? "0,108,172";
+
           window.remark_config = {
             host: ${JSON.stringify(host)},
             site_id: ${JSON.stringify(siteId)},
             components: ["embed"],
             url: ${JSON.stringify(canonicalUrl)},
             page_title: ${JSON.stringify(pageTitle)},
-            theme: document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light"
+            theme: document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light",
+            __colors__: {
+              "--primary-color": accentRgb,
+              "--primary-brighter-color": scaleRgb(accentRgb, 0.88),
+              "--primary-darker-color": scaleRgb(accentRgb, 0.72),
+            }
           };
 
           if (!document.getElementById("remark42-script")) {
