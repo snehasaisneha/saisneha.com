@@ -68,8 +68,9 @@ services:
       SITE: ${REMARK42_SITE_ID}
       SECRET: ${REMARK42_SECRET}
       AUTH_ANON: "true"
-      ADMIN_SHARED_ID: ${REMARK42_ADMIN_SHARED_ID}
+      ADMIN_PASSWD: ${REMARK42_ADMIN_PASSWORD}
+      AUTH_GITHUB_CID: ${REMARK42_GITHUB_CLIENT_ID}
+      AUTH_GITHUB_CSEC: ${REMARK42_GITHUB_CLIENT_SECRET}
       STORE_BOLT_PATH: /srv/var/db
-    command: server
     volumes:
       - ./volumes/remark42:/srv/var

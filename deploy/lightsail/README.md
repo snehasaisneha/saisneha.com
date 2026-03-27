@@ -63,7 +63,17 @@ Generate strong secrets:
 openssl rand -base64 48
 ```
 
-Use one value for `REMARK42_SECRET` and another for `REMARK42_ADMIN_SHARED_ID`.
+You need to set all of these before startup:
+
+- `LISTMONK_ADMIN_PASSWORD`
+- `LISTMONK_DB_PASSWORD`
+- `SMTP_PASSWORD`
+- `REMARK42_SECRET`
+- `REMARK42_ADMIN_PASSWORD`
+- `REMARK42_GITHUB_CLIENT_ID`
+- `REMARK42_GITHUB_CLIENT_SECRET`
+
+Use one generated random value for `REMARK42_SECRET` and another for `REMARK42_ADMIN_PASSWORD`.
 
 ## 3. Start the services
 
@@ -79,6 +89,23 @@ Expected local ports:
 
 - listmonk -> `127.0.0.1:9000`
 - remark42 -> `127.0.0.1:8080`
+
+If `remark42` keeps restarting, check:
+
+```bash
+docker compose logs -f remark42
+```
+
+Remark42 currently expects:
+
+- `REMARK_URL`
+- `SECRET`
+- at least one auth provider pair
+
+This deployment bundle uses GitHub auth plus anonymous comments, so you must fill:
+
+- `REMARK42_GITHUB_CLIENT_ID`
+- `REMARK42_GITHUB_CLIENT_SECRET`
 
 ## 4. Configure nginx
 
@@ -120,6 +147,22 @@ Then:
 
 Once the list exists, note its public UUID.
 
+## 6a. Configure GitHub OAuth for Remark42
+
+Create a GitHub OAuth app here:
+
+- https://github.com/settings/developers
+
+Use:
+
+- Homepage URL: `https://comments.saisneha.com`
+- Authorization callback URL: `https://comments.saisneha.com/auth/github/callback`
+
+Then put the resulting values into:
+
+- `REMARK42_GITHUB_CLIENT_ID`
+- `REMARK42_GITHUB_CLIENT_SECRET`
+
 ## 7. Configure website env vars
 
 Set these in Netlify for the site:
@@ -138,5 +181,6 @@ The website code already supports these env vars.
 - Forward Email should be configured on `mailer.saisneha.com`, not the root mail domain.
 - `newsletter@mailer.saisneha.com` should be used as the sending address.
 - `comments.saisneha.com` does not need SMTP to work initially unless you later want email notifications from Remark42.
+- Remark42 is configured here with GitHub login plus anonymous comments. This is a practical starting point because it gives you a real moderator identity while still letting drive-by readers comment anonymously.
 - Upgrade listmonk by pulling the new image and re-running the app container. See:
   - https://listmonk.app/docs/upgrade/
