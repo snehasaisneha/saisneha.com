@@ -20,8 +20,16 @@ const enabled = Boolean(host && siteId);
 {
   enabled && (
     <section class="mt-10 space-y-4 border-t border-dashed border-border pt-8">
+      <link rel="preconnect" href={host} />
+      <link rel="dns-prefetch" href={host} />
       <h2 class="text-xl font-semibold text-foreground">Comments</h2>
-      <div class="comments-shell">
+      <div class="comments-shell" data-comments-shell>
+        <div class="comments-loading" data-comments-loading aria-live="polite">
+          <p class="comments-loading-title">Loading comments...</p>
+          <p class="comments-loading-copy">
+            Warming up the comment thread.
+          </p>
+        </div>
         <div id="remark42"></div>
       </div>
       <script
@@ -69,6 +77,12 @@ const enabled = Boolean(host && siteId);
           const accentValue = getComputedStyle(document.documentElement)
             .getPropertyValue("--color-accent");
           const accentRgb = parseAccentColor(accentValue) ?? "0,108,172";
+          const shell = document.querySelector("[data-comments-shell]");
+          const loading = document.querySelector("[data-comments-loading]");
+          const hideLoading = () => {
+            shell?.setAttribute("data-comments-ready", "true");
+            loading?.setAttribute("hidden", "");
+          };
 
           window.remark_config = {
             host: ${JSON.stringify(host)},
@@ -83,6 +97,39 @@ const enabled = Boolean(host && siteId);
               "--primary-darker-color": scaleRgb(accentRgb, 0.72),
             }
           };
+
+          const root = document.getElementById("remark42");
+          if (root && !root.dataset.observingComments) {
+            root.dataset.observingComments = "true";
+
+            const observer = new MutationObserver(() => {
+              const iframe = root.querySelector("iframe");
+              if (!iframe) return;
+
+              const markReady = () => {
+                hideLoading();
+                observer.disconnect();
+              };
+
+              iframe.addEventListener("load", markReady, { once: true });
+
+              if (iframe.contentWindow || iframe.getAttribute("src")) {
+                window.setTimeout(markReady, 250);
+              }
+            });
+
+            observer.observe(root, { childList: true, subtree: true });
+          }
+
+          if (!window.__remark42ReadyBound) {
+            window.__remark42ReadyBound = true;
+            window.addEventListener("message", event => {
+              const data = event?.data;
+              if (data && typeof data === "object" && data.inited === true) {
+                hideLoading();
+              }
+            });
+          }
 
           if (!document.getElementById("remark42-script")) {
             const script = document.createElement("script");

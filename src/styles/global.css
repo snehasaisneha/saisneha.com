@@ -115,7 +115,24 @@ html[data-theme="dark"] {
 }
 
 .comments-shell {
-  @apply pt-1;
+  @apply relative pt-1;
+}
+
+.comments-shell[data-comments-ready="true"] .comments-loading {
+  @apply opacity-0;
+  pointer-events: none;
+}
+
+.comments-loading {
+  @apply mb-4 rounded-2xl border border-dashed border-border bg-muted/20 px-4 py-3 text-sm text-foreground/70 transition-opacity duration-300;
+}
+
+.comments-loading-title {
+  @apply font-medium text-foreground;
+}
+
+.comments-loading-copy {
+  @apply mt-1;
 }
 
 .comments-shell #remark42 {
