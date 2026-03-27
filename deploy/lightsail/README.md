@@ -141,6 +141,8 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
+For `listmonk.saisneha.com`, keep CORS handling only on the `OPTIONS` preflight response in nginx. Do not also add `Access-Control-Allow-Origin` headers to the normal proxied POST response, because listmonk already sends its own CORS header and duplicate values can make browser `fetch()` fail even when the subscription itself succeeds.
+
 ## 5. Get TLS certificates
 
 ```bash
@@ -159,7 +161,11 @@ Then:
 - create a public list, for example `site-updates`
 - enable double opt-in if desired
 - keep the sender as `newsletter@mailer.saisneha.com`
-- set reply-to to your preferred real inbox
+- set `Reply-To` in the SMTP server `Headers` field, for example:
+
+```json
+[{"Reply-To":"reply@mailer.saisneha.com"}]
+```
 
 Once the list exists, note its public UUID.
 
