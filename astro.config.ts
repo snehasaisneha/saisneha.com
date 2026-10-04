@@ -1,6 +1,6 @@
-import { defineConfig, envField } from "astro/config";
-import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
+import rehypeReferences from "./src/plugins/rehype-references.js";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import {
@@ -14,12 +14,12 @@ import { SITE } from "./src/config";
 // https://astro.build/config
 export default defineConfig({
   site: SITE.website,
-  integrations: [
-    sitemap({
-      filter: page => SITE.showArchives || !page.endsWith("/archives"),
-    }),
-  ],
+  output: "static",
+  redirects: { "/about": "/" },
+  prefetch: { defaultStrategy: "hover" },
+  integrations: [sitemap()],
   markdown: {
+    rehypePlugins: [rehypeReferences],
     remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
     shikiConfig: {
       // For more themes, visit https://shiki.style/themes
@@ -35,11 +35,9 @@ export default defineConfig({
     },
   },
   vite: {
-    // eslint-disable-next-line
-    // @ts-ignore
-    // This will be fixed in Astro 6 with Vite 7 support
-    // See: https://github.com/withastro/astro/issues/14030
-    plugins: [tailwindcss()],
+    // Allow the FastComments iframe to load our self-hosted fonts in previews.
+    server: { cors: { origin: "https://fastcomments.com" } },
+    preview: { cors: { origin: "https://fastcomments.com" } },
     optimizeDeps: {
       exclude: ["@resvg/resvg-js"],
     },
@@ -47,35 +45,6 @@ export default defineConfig({
   image: {
     responsiveStyles: true,
     layout: "constrained",
-  },
-  env: {
-    schema: {
-      PUBLIC_GOOGLE_SITE_VERIFICATION: envField.string({
-        access: "public",
-        context: "client",
-        optional: true,
-      }),
-      PUBLIC_REMARK42_HOST: envField.string({
-        access: "public",
-        context: "client",
-        optional: true,
-      }),
-      PUBLIC_REMARK42_SITE_ID: envField.string({
-        access: "public",
-        context: "client",
-        optional: true,
-      }),
-      PUBLIC_LISTMONK_URL: envField.string({
-        access: "public",
-        context: "client",
-        optional: true,
-      }),
-      PUBLIC_LISTMONK_LIST_UUID: envField.string({
-        access: "public",
-        context: "client",
-        optional: true,
-      }),
-    },
   },
   experimental: {
     preserveScriptOrder: true,

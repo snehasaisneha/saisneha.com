@@ -12,3 +12,6 @@
 !.prettierrc
 !eslint.config.js
 !README.md
+
+# Preserve author-controlled prose formatting.
+src/data/**/*.md

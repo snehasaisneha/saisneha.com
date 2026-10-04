@@ -39,12 +39,12 @@ const { page, tagName } = Astro.props;
     pageDesc={`All the articles with the tag "${tagName}".`}
   >
     <h1 slot="title" transition:name={tag}>{`Tag:${tag}`}</h1>
-    <ul>
+    <ul class="plain-list">
       {page.data.map(data => <Card {...data} />)}
     </ul>
   </Main>
 
   <Pagination {page} />
 
-  <Footer noMarginTop={page.lastPage > 1} />
+  <Footer />
 </Layout>

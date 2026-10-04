@@ -1,7 +1,6 @@
 ---
 title: "VHoIP #1: Seeking out Boredom; Call your Friends!"
 pubDatetime: 2025-04-05T11:02:13+05:30
-description: "I often have a lot I'd like to write about not necessarily because I have something incredibly unique to offer, but often to just get my thoughts on to paper often physical paper, and make sense of them. So, I'm resta..."
 series:
   - "VhoIP"
 ---

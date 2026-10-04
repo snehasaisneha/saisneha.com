@@ -1,9 +1,9 @@
 ---
 title: "VHoIP #2: Spreadsheet Annoyances and a Journalling App!"
 pubDatetime: 2025-08-09T11:02:13+05:30
-description: "I've been attempting to mood journal for the past 5 weeks. It was initially an attempt to collect data on how my mood changes and what influences it. So an excel sheet did the trick. I'd fill it on my phone using the..."
 series:
   - "VhoIP"
+tags: ["tech"]
 ---
 
 ## Spreadsheet Annoyances

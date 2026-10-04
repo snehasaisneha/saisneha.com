@@ -9,9 +9,11 @@ type Props = {
 };
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const posts = getSortedPosts(await getCollection("blog"));
   const postResult = posts.map(post => ({
-    params: { slug: getPath(post.id, post.filePath, false, post.data.pubDatetime) },
+    params: {
+      slug: getPath(post.id, post.filePath, false, post.data.pubDatetime),
+    },
     props: { post },
   }));
 

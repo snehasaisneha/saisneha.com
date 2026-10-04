@@ -13,7 +13,9 @@ export async function getStaticPaths() {
 
     return {
       params: { year, month, slug },
-      props: { target: getPath(post.id, post.filePath, true, post.data.pubDatetime) },
+      props: {
+        target: getPath(post.id, post.filePath, true, post.data.pubDatetime),
+      },
     };
   });
 }
@@ -28,9 +30,6 @@ const { target } = Astro.props;
     <meta http-equiv="refresh" content={`0;url=${target}`} />
     <link rel="canonical" href={target} />
     <title>Redirecting…</title>
-    <script is:inline>
-      {`window.location.replace(${JSON.stringify(target)});`}
-    </script>
   </head>
   <body>
     <p>

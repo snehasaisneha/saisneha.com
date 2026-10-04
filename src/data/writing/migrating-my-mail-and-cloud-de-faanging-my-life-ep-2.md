@@ -1,12 +1,9 @@
 ---
 title: "Migrating my Mail and Cloud (De-Faanging my Life Ep #2)"
 pubDatetime: 2024-07-13T17:02:16+05:30
-description: "So, as I explained two weeks back, I'm making a concerted effort to move away from the big tech giants opting for smaller, privacy centric options. This week, I'm going to document my journey there in a few key areas..."
-tags:
-  - "defaanging"
-  - "degoogleing"
 series:
   - "de-faang"
+tags: ["tech"]
 ---
 
 So, as I explained [two weeks back](/blog/2024/06/de-faanging-and-de-googling-my-life-ep-1-framework-and-dragons/), I'm making a concerted effort to move away from the big tech giants - opting for smaller, privacy centric options. This week, I'm going to document my journey there in a few key areas - Mail, Calendar, Meetings, and Cloud storage. I will be rambling quite a bit. 

@@ -1,0 +1,19 @@
+{
+  "Post frontmatter": {
+    "scope": "markdown",
+    "prefix": "frontmatter",
+    "body": [
+      "---",
+      "title: \"$1\"",
+      "pubDatetime: $CURRENT_YEAR-$CURRENT_MONTH-${CURRENT_DATE}T12:00:00+05:30",
+      "subtitle: \"$2\"",
+      "draft: true",
+      "comments: true",
+      "tags: []",
+      "---",
+      "",
+      "$0"
+    ],
+    "description": "Start a draft post; remove draft or set false to publish."
+  }
+}

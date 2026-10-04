@@ -1,9 +1,8 @@
 ---
 title: "Isn't Sex just as socially constructed as Gender is, if not more?"
 pubDatetime: 2023-05-04T00:00:00+05:30
-description: "and other fun discussions which make me the life of every party"
-tags:
-  - "substack-migration"
+subtitle: "and other fun discussions which make me the life of every party"
+tags: ["gender"]
 ---
 
 My team and I were recently on call with a public sector partner, where we’re constructing a dashboard to display disease dynamics. Among other things, one thing the dashboard did was it allowed you to filter disease incidence by sex. During the call, one of the members of our partner’s team said that she wanted us to change sex to gender in the filter.

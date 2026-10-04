@@ -1,0 +1,34 @@
+---
+type Props = { current: number; total: number; base?: string };
+const { current, total, base = "/page/" } = Astro.props;
+const first = base === "/page/" ? "/" : "/archives/";
+---
+
+{
+  total > 1 && (
+    <nav class="page-nav" aria-label="Post pages">
+      <>
+        <div>
+          {current > 1 && (
+            <a
+              rel="prev"
+              href={current === 2 ? first : `${base}${current - 1}/`}
+            >
+              ← Newer posts
+            </a>
+          )}
+        </div>
+        <span>
+          Page {current} of {total}
+        </span>
+        <div>
+          {current < total && (
+            <a rel="next" href={`${base}${current + 1}/`}>
+              Older posts →
+            </a>
+          )}
+        </div>
+      </>
+    </nav>
+  )
+}

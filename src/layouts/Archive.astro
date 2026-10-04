@@ -1,0 +1,118 @@
+---
+import Layout from "./Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import PageNav from "@/components/PageNav.astro";
+import { writing, ARCHIVE_SIZE } from "@/utils/writing";
+import { SITE } from "@/config";
+type Props = { page?: number };
+const { page = 1 } = Astro.props;
+const posts = await writing();
+const total = Math.max(1, Math.ceil(posts.length / ARCHIVE_SIZE));
+const years = [...new Set(posts.map(p => p.year))];
+const tags = [...new Set(posts.flatMap(p => p.tags))].sort();
+const series = [
+  ...new Map(posts.flatMap(p => p.series).map(s => [s.id, s])).values(),
+];
+---
+
+<Layout title={`Archive | ${SITE.title}`}
+  ><Header /><main id="main-content" class="shell">
+    <h1>Archive</h1>
+    <div id="archive" data-page={page} data-size={ARCHIVE_SIZE}>
+      <form class="archive-filters" id="archive-filters" hidden>
+        <label class="archive-search"
+          >Search titles and subtitles
+          <input type="search" name="q" autocomplete="off" />
+        </label>
+        <label
+          >Year<select name="year"
+            ><option value="">All years</option>{
+              years.map(y => <option>{y}</option>)
+            }</select
+          ></label
+        >
+        <label
+          >Series<select name="series"
+            ><option value="">All series</option>{
+              series.map(s => <option value={s.id}>{s.title}</option>)
+            }</select
+          ></label
+        >
+        <fieldset class="archive-tags">
+          <legend>Tags <span class="tag-hint">(match any)</span></legend>
+          <div class="tag-options">
+            {
+              tags.map(t => (
+                <label class="tag-option">
+                  <>
+                    <input type="checkbox" name="tag" value={t} />
+                    <span>{t}</span>
+                  </>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+        <button type="reset" class="archive-clear">Clear</button>
+      </form>
+      <p class="muted" id="archive-status" tabindex="-1" aria-live="polite">
+        {posts.length} posts · Page {page} of {total}
+      </p>
+      <ul class="archive-list" id="archive-results">
+        {
+          posts.slice((page - 1) * ARCHIVE_SIZE, page * ARCHIVE_SIZE).map(p => (
+            <li class="archive-row">
+              <>
+                <time class="archive-date" datetime={p.date}>
+                  {p.dateLabel}
+                </time>
+                <div>
+                  <>
+                    <a class="archive-title" href={p.url}>
+                      {p.title}
+                    </a>
+                    <div class="archive-meta">
+                      {[
+                        p.tags.length
+                          ? p.tags.map(tag => `#${tag}`).join(" ")
+                          : "",
+                        p.series.length
+                          ? `Series: ${p.series.map(s => s.title).join(", ")}`
+                          : "",
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </div>
+                  </>
+                </div>
+              </>
+            </li>
+          ))
+        }
+      </ul>
+      <div id="archive-static-pagination">
+        <PageNav current={page} {total} base="/archives/page/" />
+      </div>
+      <nav
+        class="page-nav"
+        id="archive-pagination"
+        aria-label="Filtered archive pages"
+        hidden
+      >
+        <div>
+          <button type="button" data-direction="-1">← Newer</button>
+        </div><span id="archive-page"></span><div>
+          <button type="button" data-direction="1">Older →</button>
+        </div>
+      </nav>
+      <script
+        is:inline
+        id="archive-data"
+        type="application/json"
+        set:html={JSON.stringify(posts).replaceAll("<", "\\u003c")}
+      />
+    </div>
+  </main><Footer /></Layout
+>
+<script src="../scripts/archive.ts"></script>

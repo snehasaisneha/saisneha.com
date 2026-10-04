@@ -24,6 +24,5 @@ deploy/lightsail/.env
 # jetbrains setting folder
 .idea/
 
-# pagefind
-
-public/pagefind
+# Also ignore a local dependency symlink used for previewing.
+/node_modules

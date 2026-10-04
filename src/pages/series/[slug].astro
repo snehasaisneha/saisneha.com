@@ -34,10 +34,10 @@ const { Content } = await render(series);
 <Layout title={`${series.data.title} | ${SITE.title}`}>
   <Header />
   <Main pageTitle={series.data.title} pageDesc={`${seriesPosts.length} posts`}>
-    <article class="app-prose mb-8">
+    <article class="prose">
       <Content />
     </article>
-    <ul>
+    <ul class="plain-list">
       {seriesPosts.map(post => <Card {...post} />)}
     </ul>
   </Main>

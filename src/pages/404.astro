@@ -2,29 +2,149 @@
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import LinkButton from "@/components/LinkButton.astro";
-import { SITE } from "@/config";
+const video = "https://youtu.be/dQw4w9WgXcQ?t=42";
 ---
 
-<Layout title={`404 Not Found | ${SITE.title}`}>
+<Layout title="404 — Never gonna give you up | sneha kanmani">
   <Header />
-
-  <main
-    id="main-content"
-    class="app-layout flex flex-1 items-center justify-center"
-  >
-    <div class="mb-14 flex flex-col items-center justify-center">
-      <h1 class="text-9xl font-bold text-accent">404</h1>
-      <span aria-hidden="true">¯\_(ツ)_/¯</span>
-      <p class="mt-4 text-2xl sm:text-3xl">Page Not Found</p>
-      <LinkButton
-        href="/"
-        class="my-6 text-lg underline decoration-dashed underline-offset-8"
+  <main id="main-content" class="shell lost-page">
+    <p class="lost-number" aria-hidden="true">404</p>
+    <h1>You've come to a place that doesn't exist.</h1>
+    <p class="lost-promise">But, worry not.</p>
+    <div class="rick-photos">
+      <a
+        class="rick-photo"
+        href={video}
+        aria-label="Rick Astley in 2008 — watch Never Gonna Give You Up"
       >
-        Go back home
-      </LinkButton>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Rick_Astley.jpg/960px-Rick_Astley.jpg"
+          width="960"
+          height="720"
+          alt="Rick Astley singing on stage in Singapore in 2008"
+          decoding="async"
+        />
+        <span>2008</span>
+      </a>
+      <a
+        class="rick-photo"
+        href={video}
+        aria-label="Rick Astley in 2023 — watch Never Gonna Give You Up"
+      >
+        <img
+          src="https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Rick_Astley_2023.jpg/500px-Rick_Astley_2023.jpg"
+          width="500"
+          height="595"
+          alt="Rick Astley performing at Glastonbury in 2023"
+          decoding="async"
+        />
+        <span>2023. Still here.</span>
+      </a>
     </div>
+    <p class="lost-promise"><a href={video}>Never gonna give you up</a></p>
+    <p class="lost-exits">
+      <a href="/">Back to the writing</a><span aria-hidden="true"> · </span><a
+        href="/archives/">Browse the archive</a
+      >
+    </p>
+    <p class="photo-credits">
+      Photos: <a href="https://commons.wikimedia.org/wiki/File:Rick_Astley.jpg"
+        >choo chin nian</a
+      > (<a href="https://creativecommons.org/licenses/by-sa/2.0/"
+        >CC BY-SA 2.0</a
+      >); <a href="https://commons.wikimedia.org/wiki/File:Rick_Astley_2023.jpg"
+        >Raph_PH</a
+      > (<a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>).
+      Via Wikimedia Commons; displayed at reduced size.
+    </p>
   </main>
-
   <Footer />
 </Layout>
+
+<style>
+  .lost-page {
+    text-align: center;
+  }
+  .lost-number {
+    font-size: clamp(64px, 16vw, 110px);
+    line-height: 1;
+    color: #aaa;
+    letter-spacing: -0.06em;
+    margin: 0 0 24px;
+  }
+  .lost-page h1 {
+    font-size: clamp(23px, 4vw, 30px);
+    margin: 0 auto;
+    max-width: 580px;
+  }
+  .lost-promise {
+    font:
+      26px/1.5 "EB Garamond",
+      Georgia,
+      serif;
+    margin: 16px 0 28px;
+  }
+  .rick-photos {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    align-items: center;
+    gap: 22px;
+    padding: 10px;
+    max-width: 570px;
+    margin: 0 auto 28px;
+  }
+  .rick-photo {
+    display: block;
+    padding: 10px 10px 12px;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 3px 9px #0000000d;
+    text-decoration: none;
+    transform: rotate(-3deg);
+  }
+  .rick-photo:nth-child(2) {
+    transform: rotate(3deg);
+  }
+  .rick-photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .rick-photo span {
+    display: block;
+    font:
+      italic 19px/1.4 "EB Garamond",
+      Georgia,
+      serif;
+    margin-top: 10px;
+  }
+  .rick-photo:hover,
+  .rick-photo:focus-visible {
+    border-color: #555;
+  }
+  .lost-exits {
+    font-size: 13px;
+  }
+  .photo-credits {
+    font-size: 10px;
+    line-height: 1.7;
+    color: #777;
+    max-width: 540px;
+    margin: 28px auto 0;
+  }
+  @media (max-width: 440px) {
+    .rick-photos {
+      gap: 14px;
+      padding: 8px;
+    }
+    .rick-photo {
+      padding: 6px;
+    }
+    .rick-photo span {
+      font-size: 15px;
+    }
+    .lost-promise {
+      font-size: 24px;
+    }
+  }
+</style>

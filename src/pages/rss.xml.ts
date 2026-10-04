@@ -14,7 +14,7 @@ export async function GET() {
     items: sortedPosts.map(({ data, id, filePath }) => ({
       link: getPath(id, filePath, true, data.pubDatetime),
       title: data.title,
-      description: data.description,
+      description: data.subtitle,
       pubDate: new Date(data.modDatetime ?? data.pubDatetime),
     })),
   });

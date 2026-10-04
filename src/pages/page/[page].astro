@@ -1,0 +1,14 @@
+---
+import Home from "@/layouts/Home.astro";
+import { homeWriting, HOME_SIZE } from "@/utils/writing";
+export async function getStaticPaths() {
+  const posts = await homeWriting();
+  return Array.from(
+    { length: Math.max(0, Math.ceil(posts.length / HOME_SIZE) - 1) },
+    (_, i) => ({ params: { page: String(i + 2) }, props: { page: i + 2 } })
+  );
+}
+const { page } = Astro.props;
+---
+
+<Home {page} />

@@ -1,7 +1,9 @@
+# Static Astro site. These settings apply to production and preview builds.
 [build]
   command = "pnpm run build"
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "22"
-  PNPM_VERSION = "10.32.1"
+  NODE_VERSION = "24"
+  PNPM_FLAGS = "--frozen-lockfile"
+# pnpm is pinned by packageManager in package.json.

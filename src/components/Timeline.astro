@@ -1,0 +1,36 @@
+---
+import type { Writing } from "@/utils/writing";
+import PostMeta from "./PostMeta.astro";
+type Props = { posts: Writing[] };
+const { posts } = Astro.props;
+const years = [...new Set(posts.map(p => p.year))];
+---
+
+<div class="timeline" aria-label="Posts, newest first">
+  {
+    years.map(year => (
+      <section class="timeline-year" aria-labelledby={`year-${year}`}>
+        <>
+          <h2 id={`year-${year}`}>{year}</h2>
+          <ul>
+            {posts
+              .filter(p => p.year === year)
+              .map(post => (
+                <li>
+                  <h3>
+                    <a data-astro-prefetch href={post.url}>
+                      {post.title}
+                    </a>
+                  </h3>
+                  {post.subtitle && (
+                    <p class="post-subtitle">{post.subtitle}</p>
+                  )}
+                  <PostMeta {post} />
+                </li>
+              ))}
+          </ul>
+        </>
+      </section>
+    ))
+  }
+</div>

@@ -1,36 +1,21 @@
 ---
-import type { HTMLAttributes } from "astro/types";
-import NewsletterForm from "./NewsletterForm.astro";
-import Socials from "./Socials.astro";
-
-const currentYear = new Date().getFullYear();
-
-type Props = {
-  noMarginTop?: boolean;
-} & HTMLAttributes<"footer">;
-
-const { noMarginTop = false, class: className, ...attrs } = Astro.props;
+import { SITE } from "@/config";
 ---
 
-<footer
-  class:list={["app-layout", { "mt-auto": !noMarginTop }, className]}
-  {...attrs}
->
-  <div class="mx-auto w-full max-w-3xl border-t border-border py-8">
-    <NewsletterForm />
-  </div>
-  <div
-    class:list={[
-      "py-6 sm:py-4",
-      "border-t border-border",
-      "flex flex-col items-center justify-between sm:flex-row-reverse",
-    ]}
-  >
-    <Socials />
-    <div class="my-2 flex flex-col items-center whitespace-nowrap sm:flex-row">
-      <span>Copyright &#169; {currentYear}</span>
-      <span class="hidden sm:inline">&nbsp;|&nbsp;</span>
-      <span>All rights reserved.</span>
-    </div>
+<footer class="site-footer shell">
+  <span>© {new Date().getFullYear()} {SITE.author}</span>
+  <div class="footer-links">
+    <nav aria-label="Footer">
+      <a href="/rss.xml">RSS</a><a href="/series/">Series</a><a
+        href="https://github.com/snehasaisneha/saisneha.com">Source</a
+      >
+      <a href="/housekeeping/">Tech Stack</a>
+    </nav>
+    <nav aria-label="Socials">
+      <a href="https://www.linkedin.com/in/snehasaisneha/" rel="me">LinkedIn</a>
+      <a href="https://twitter.com/snehasaisneha" rel="me">Twitter</a>
+      <a href="https://github.com/snehasaisneha" rel="me">GitHub</a>
+      <a href="https://bsky.app/profile/saisneha.com" rel="me">Bluesky</a>
+    </nav>
   </div>
 </footer>

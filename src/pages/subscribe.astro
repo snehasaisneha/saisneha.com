@@ -1,0 +1,19 @@
+---
+import { Content as FollowingRSS } from "@/content/following-rss.md";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import NewsletterForm from "@/components/NewsletterForm.astro";
+import { SITE } from "@/config";
+---
+
+<Layout title={`Following this blog | ${SITE.title}`}
+  ><Header /><main id="main-content" class="shell">
+    <div class="subscribe-content">
+      <h1>Following this blog</h1>
+      <p>Get new posts by email.</p>
+      <NewsletterForm />
+      <div class="prose"><FollowingRSS /></div>
+    </div>
+  </main><Footer /></Layout
+>

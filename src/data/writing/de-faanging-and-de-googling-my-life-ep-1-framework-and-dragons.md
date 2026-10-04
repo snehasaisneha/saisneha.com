@@ -1,12 +1,9 @@
 ---
 title: "De-FAANGing and De-googling my Life Ep #1: Framework and Dragons"
 pubDatetime: 2024-06-29
-description: "Over the last few years, I've experimented with various online services, free and paid, and explored their feature sets, advantages, and disadvantages. In recent months, I have come to the difficult conclusion that my..."
-tags:
-  - "defaanging"
-  - "degoogleing"
 series:
   - "de-faang"
+tags: ["tech"]
 ---
 
 Over the last few years, I've experimented with various online services, free and paid, and explored their feature sets, advantages, and disadvantages. In recent months, I have come to the difficult conclusion that my set up, honed over the past many years, is not only sub-optimal, but is also waiting to break. I've also realised that there is a great deal of dependency on Google, Apple, Microsoft, and other similar large tech companies, a group of corporations that used to, very aptly, be referred to as [FAANG](https://en.wikipedia.org/wiki/Big_Tech "Big Tech"). I now wish to remedy this.

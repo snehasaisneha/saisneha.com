@@ -1,145 +1,149 @@
 ---
-import {
-  PUBLIC_REMARK42_HOST,
-  PUBLIC_REMARK42_SITE_ID,
-} from "astro:env/client";
-
-type Props = {
-  pageTitle: string;
-  pageUrl?: string;
-};
-
+import { SITE } from "@/config";
+type Props = { pageTitle: string; pageUrl: string };
 const { pageTitle, pageUrl } = Astro.props;
-const host = PUBLIC_REMARK42_HOST?.replace(/\/$/, "") ?? "";
-const siteId = PUBLIC_REMARK42_SITE_ID ?? "";
-const canonicalUrl =
-  pageUrl ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
-const enabled = Boolean(host && siteId);
+const tenant = (
+  import.meta.env.PUBLIC_FASTCOMMENTS_TENANT_ID ?? SITE.fastCommentsTenantId
+).trim();
 ---
 
 {
-  enabled && (
-    <section class="mt-10 space-y-4 border-t border-dashed border-border pt-8">
-      <link rel="preconnect" href={host} />
-      <link rel="dns-prefetch" href={host} />
-      <h2 class="text-xl font-semibold text-foreground">Comments</h2>
-      <div class="comments-shell" data-comments-shell>
-        <div class="comments-loading" data-comments-loading aria-live="polite">
-          <p class="comments-loading-title">Loading comments...</p>
-          <p class="comments-loading-copy">
-            Warming up the comment thread.
-          </p>
-        </div>
-        <div id="remark42"></div>
-      </div>
-      <script
-        is:inline
-        set:html={`
-          const parseAccentColor = value => {
-            const trimmed = value.trim();
-
-            if (!trimmed) return null;
-
-            if (trimmed.startsWith("#")) {
-              const hex = trimmed.slice(1);
-              const normalized =
-                hex.length === 3
-                  ? hex
-                      .split("")
-                      .map(char => char + char)
-                      .join("")
-                  : hex;
-
-              if (normalized.length !== 6) return null;
-
-              const rgb = normalized.match(/.{2}/g)?.map(part => parseInt(part, 16));
-              return rgb?.join(",") ?? null;
-            }
-
-            const rgbMatch = trimmed.match(/rgba?\\(([^)]+)\\)/i);
-            if (!rgbMatch) return null;
-
-            return rgbMatch[1]
-              .split(",")
-              .slice(0, 3)
-              .map(part => Math.max(0, Math.min(255, Number.parseFloat(part.trim()) || 0)))
-              .join(",");
-          };
-
-          const scaleRgb = (rgb, factor) =>
-            rgb
-              .split(",")
-              .map(value =>
-                Math.max(0, Math.min(255, Math.round(Number.parseFloat(value.trim()) * factor)))
-              )
-              .join(",");
-
-          const accentValue = getComputedStyle(document.documentElement)
-            .getPropertyValue("--color-accent");
-          const accentRgb = parseAccentColor(accentValue) ?? "0,108,172";
-          const shell = document.querySelector("[data-comments-shell]");
-          const loading = document.querySelector("[data-comments-loading]");
-          const hideLoading = () => {
-            shell?.setAttribute("data-comments-ready", "true");
-            loading?.setAttribute("hidden", "");
-          };
-
-          window.remark_config = {
-            host: ${JSON.stringify(host)},
-            site_id: ${JSON.stringify(siteId)},
-            components: ["embed"],
-            url: ${JSON.stringify(canonicalUrl)},
-            page_title: ${JSON.stringify(pageTitle)},
-            theme: document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light",
-            __colors__: {
-              "--primary-color": accentRgb,
-              "--primary-brighter-color": scaleRgb(accentRgb, 0.88),
-              "--primary-darker-color": scaleRgb(accentRgb, 0.72),
-            }
-          };
-
-          const root = document.getElementById("remark42");
-          if (root && !root.dataset.observingComments) {
-            root.dataset.observingComments = "true";
-
-            const observer = new MutationObserver(() => {
-              const iframe = root.querySelector("iframe");
-              if (!iframe) return;
-
-              const markReady = () => {
-                hideLoading();
-                observer.disconnect();
-              };
-
-              iframe.addEventListener("load", markReady, { once: true });
-
-              if (iframe.contentWindow || iframe.getAttribute("src")) {
-                window.setTimeout(markReady, 250);
-              }
-            });
-
-            observer.observe(root, { childList: true, subtree: true });
-          }
-
-          if (!window.__remark42ReadyBound) {
-            window.__remark42ReadyBound = true;
-            window.addEventListener("message", event => {
-              const data = event?.data;
-              if (data && typeof data === "object" && data.inited === true) {
-                hideLoading();
-              }
-            });
-          }
-
-          if (!document.getElementById("remark42-script")) {
-            const script = document.createElement("script");
-            script.id = "remark42-script";
-            script.defer = true;
-            script.src = ${JSON.stringify(`${host}/web/embed.js`)};
-            document.head.appendChild(script);
-          }
-        `}
-      ></script>
+  tenant && (
+    <section
+      class="comments"
+      data-comments
+      data-tenant={tenant}
+      data-url={pageUrl}
+      data-title={pageTitle}
+    >
+      <>
+        <h2>Comments</h2>
+        <p data-comments-status role="status">
+          Comments load when you reach this section.
+        </p>
+        <div id="fastcomments-widget" />
+        <p class="comments-privacy">
+          I won't send you any marketing or solicitation emails. Emails are
+          managed by fastcomments.com and data is subject to their{" "}
+          <a
+            href="https://fastcomments.com/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            privacy policy
+          </a>
+          .
+        </p>
+        <button type="button" data-load-comments>
+          Load comments
+        </button>
+      </>
     </section>
   )
 }
+<script>
+  const section = document.querySelector<HTMLElement>("[data-comments]");
+  if (section) {
+    let loading = false;
+    const button = section.querySelector<HTMLButtonElement>(
+      "[data-load-comments]"
+    )!;
+    const status = section.querySelector<HTMLElement>(
+      "[data-comments-status]"
+    )!;
+    function load() {
+      if (loading || !section) return;
+      loading = true;
+      button.disabled = true;
+      status.textContent = "Loading comments…";
+      const configWindow = window as typeof window & {
+        fcConfigs?: Array<Record<string, unknown>>;
+      };
+      configWindow.fcConfigs = [
+        {
+          target: "#fastcomments-widget",
+          tenantId: section.dataset.tenant,
+          urlId: section.dataset.url,
+          url: section.dataset.url,
+          pageTitle: section.dataset.title,
+          allowAnon: true,
+          // Email visibility and verification are managed in FastComments.
+          disableToolbar: false,
+          noImageUploads: true,
+          hideAvatars: true,
+          disableNotificationBell: true,
+          enableResizeHandle: true,
+          // The widget lives in a separate iframe, so it cannot inherit our CSS.
+          customCSS: `
+            @font-face{font-family:"EB Garamond";font-style:normal;font-weight:400 800;font-display:swap;src:url("${window.location.origin}/fonts/eb-garamond/eb-garamond-latin-normal.woff2") format("woff2")}
+            @font-face{font-family:"EB Garamond";font-style:italic;font-weight:400 800;font-display:swap;src:url("${window.location.origin}/fonts/eb-garamond/eb-garamond-latin-italic.woff2") format("woff2")}
+            .fast-comments,input,button,select{font-family:Verdana,Geneva,sans-serif}
+            .fast-comments textarea.comment-input,.comment-text,.comment-text-edit{font-family:"EB Garamond",Garamond,Georgia,serif;font-size:22px;line-height:1.65}
+            .fast-comments .solicitation-info{display:none}
+            .fast-comments{--fc-input-border-radius:0;--fc-input-border-start-start-radius:0;--fc-input-border-color:#bbb;color:#222}
+            .fast-comments .comment-reply.root{padding:0;margin:8px 0 16px}
+            .fast-comments div.comment-input{padding-bottom:0;border-radius:0}
+            .fast-comments textarea.comment-input{height:110px;min-height:110px;padding:10px 12px;border:1px solid #bbb;border-radius:0;resize:vertical;background:#fff}
+            .fast-comments .horizontal-border-wrapper{display:none}
+            .fast-comments .comment-reply.root .reply-button-wrapper{float:none;position:static;margin:10px 0;text-align:right}
+            .fast-comments .comment-reply.root:has(.user-info-input:not(.hidden)) .reply-button-wrapper{display:none}
+            .fast-comments button,.fast-comments .button,.fast-comments .auth-input .fast-comments-reply{border:1px solid #bbb;border-radius:0;background:#eee;color:#222;box-shadow:none;min-height:44px;padding:8px 14px;font-size:13px;font-weight:400}
+            .fast-comments button .bubble{display:none}
+            .fast-comments .auth-input{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+            .fast-comments .auth-input input{flex:1 1 200px;width:auto;min-width:0;min-height:44px;margin:0;border:1px solid #bbb;border-radius:0;padding:8px 10px;font-size:16px}
+            .fast-comments .comment-reply .auth-input .reasoning{display:none}
+            .fast-comments .auth-input .fc-login{flex-basis:100%;margin:0;padding:0;min-height:0;border:0;background:transparent;text-decoration:underline;font-size:12px}
+            .fast-comments .auth-input input[name="fastcomments-username"]{order:1}
+            .fast-comments .auth-input input[name="fastcomments-email"]{order:2}
+            .fast-comments .auth-input .fast-comments-reply{order:3}
+            .fast-comments .auth-input .fast-comments-reply{margin:0}
+            .fast-comments input:focus-visible,.fast-comments textarea:focus-visible,.fast-comments button:focus-visible{outline:2px solid #555;outline-offset:2px}
+            .fast-comments .comment-text{font-family:"EB Garamond",Garamond,Georgia,serif;font-size:22px!important;line-height:1.65!important}
+            @media(max-width:500px){.fast-comments .auth-input input{flex-basis:100%;width:100%}}
+
+          `
+            .replace(/\s+/g, " ")
+            .trim(),
+        },
+      ];
+      const script = document.createElement("script");
+      script.src = "https://cdn.fastcomments.com/js/embed-v2-async.min.js";
+      script.async = true;
+      script.onload = () => {
+        status.hidden = true;
+        button.hidden = true;
+      };
+      script.onerror = () => {
+        loading = false;
+        button.disabled = false;
+        status.textContent = "Comments could not load. Please try again.";
+        script.remove();
+      };
+      document.head.append(script);
+    }
+    button.addEventListener("click", load);
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        entries => {
+          if (entries.some(e => e.isIntersecting)) {
+            observer.disconnect();
+            load();
+          }
+        },
+        { rootMargin: "200px" }
+      );
+      observer.observe(section);
+    }
+  }
+</script>
+
+<style>
+  .comments-privacy {
+    font:
+      12px/1.6 Verdana,
+      Geneva,
+      sans-serif;
+    color: #666;
+    margin: 12px 0;
+  }
+</style>

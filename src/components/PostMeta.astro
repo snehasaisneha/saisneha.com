@@ -1,0 +1,35 @@
+---
+import type { Writing } from "@/utils/writing";
+import { slugifyStr } from "@/utils/slugify";
+type Props = { post: Writing };
+const { post } = Astro.props;
+---
+
+<div class="post-meta">
+  <time datetime={post.date}>{post.dateLabel}</time>
+  {
+    post.tags.length > 0 && (
+      <span>
+        {post.tags.map((tag, i) => (
+          <>
+            {i > 0 && ", "}
+            <a href={`/tags/${slugifyStr(tag)}/`}>#{tag}</a>
+          </>
+        ))}
+      </span>
+    )
+  }
+  {
+    post.series.length > 0 && (
+      <span>
+        Series:{" "}
+        {post.series.map((series, i) => (
+          <>
+            {i > 0 && ", "}
+            <a href={`/series/${series.id}/`}>{series.title}</a>
+          </>
+        ))}
+      </span>
+    )
+  }
+</div>

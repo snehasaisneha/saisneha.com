@@ -1,9 +1,7 @@
 ---
 title: "The Agony and The Ecstasy"
 pubDatetime: 2023-04-13T00:00:00+05:30
-description: "This is a follow up to the piece that inspired the title of this blog Hurtling Through Space"
-tags:
-  - "substack-migration"
+tags: ["archive"]
 ---
 
 This is a follow-up to the piece that inspired the title of this blog - [Hurtling Through Space](/blog/2022/01/hurtling_through_space/)

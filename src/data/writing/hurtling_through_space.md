@@ -1,9 +1,7 @@
 ---
 title: "Hurtling through Space"
 pubDatetime: 2022-01-22T00:00:00+05:30
-description: "There is a place above the atmosphere of the earth, where stars and satellites live."
-tags:
-  - "substack-migration"
+tags: ["archive"]
 ---
 
 There is a place above the atmosphere of the earth, where stars and satellites live.
