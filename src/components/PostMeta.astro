@@ -9,7 +9,7 @@ const { post } = Astro.props;
   <time datetime={post.date}>{post.dateLabel}</time>
   {
     post.tags.length > 0 && (
-      <span>
+      <span class="post-tags">
         {post.tags.map((tag, i) => (
           <>
             {i > 0 && ", "}
@@ -21,7 +21,7 @@ const { post } = Astro.props;
   }
   {
     post.series.length > 0 && (
-      <span>
+      <span class="post-series">
         Series:{" "}
         {post.series.map((series, i) => (
           <>

@@ -1,0 +1,38 @@
+---
+import type { MarkdownHeading } from "astro";
+type Props = { headings: MarkdownHeading[]; mobile?: boolean };
+const { headings, mobile = false } = Astro.props;
+const baseDepth = Math.min(...headings.map(heading => heading.depth));
+---
+
+{
+  mobile ? (
+    <details class="post-toc toc-mobile">
+      <summary>Contents</summary>
+      <nav aria-label="Table of contents">
+        <ol>
+          {headings.map(heading => (
+            <li
+              style={`--toc-depth: ${Math.min(heading.depth - baseDepth, 2)}`}
+            >
+              <a href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </details>
+  ) : (
+    <nav class="post-toc toc-desktop" aria-label="Table of contents">
+      <h2>Contents</h2>
+      <ol>
+        {headings.map(heading => (
+          <li style={`--toc-depth: ${Math.min(heading.depth - baseDepth, 2)}`}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
+<script src="../scripts/table-of-contents.ts"></script>

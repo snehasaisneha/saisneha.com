@@ -3,6 +3,7 @@ import { render, type CollectionEntry } from "astro:content";
 import Layout from "./Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+import TableOfContents from "@/components/TableOfContents.astro";
 import Comments from "@/components/Comments.astro";
 import PostMeta from "@/components/PostMeta.astro";
 import { writing } from "@/utils/writing";
@@ -14,7 +15,7 @@ type Props = {
   seriesBySlug: Record<string, { title: string }>;
 };
 const { post, posts } = Astro.props;
-const { Content, remarkPluginFrontmatter } = await render(post);
+const { Content, headings, remarkPluginFrontmatter } = await render(post);
 const referenceOccurrences = (remarkPluginFrontmatter.referenceOccurrences ??
   {}) as Record<string, number>;
 const info = (await writing()).find(p => p.id === post.id)!;
@@ -37,106 +38,142 @@ const image =
   ogImage={image}
   article
 >
-  <Header /><main id="main-content" class="shell">
-    <header class="article-heading">
-      <h1>{post.data.title}</h1>
-      {post.data.subtitle && <p class="post-subtitle">{post.data.subtitle}</p>}
-      <PostMeta post={info} />
-    </header><article class="prose">
-      <Content />
+  <Header /><main
+    id="main-content"
+    class:list={["shell", "post-layout", { "has-toc": headings.length > 0 }]}
+  >
+    <div class="post-content">
+      <header class="article-heading">
+        <h1>{post.data.title}</h1>
+        {
+          post.data.subtitle && (
+            <p class="post-subtitle">{post.data.subtitle}</p>
+          )
+        }
+        <PostMeta post={info} />
+      </header>
+      {headings.length > 0 && <TableOfContents {headings} mobile />}
+      <article class="prose">
+        <Content />
+        {
+          ["citations", "footnotes"].map(kind => {
+            const refs =
+              kind === "citations" ? post.data.citations : post.data.notes;
+            return refs?.length ? (
+              <section class="reference-list">
+                <>
+                  <h2>{kind === "citations" ? "References" : "Notes"}</h2>
+                  <ol>
+                    {refs.map(ref => (
+                      <li id={`${kind}-${ref.id}`}>
+                        <span class="reference-label">
+                          {`[${kind === "footnotes" ? "n " : ""}${ref.id}]`}
+                        </span>{" "}
+                        {ref.text}{" "}
+                        {ref.href && (
+                          <a href={ref.href}>{ref.linkText ?? "Source"}</a>
+                        )}{" "}
+                        {ref.archiveHref && (
+                          <a href={ref.archiveHref}>
+                            {ref.archiveLinkText ?? "Archive"}
+                          </a>
+                        )}{" "}
+                        {ref.doi && ` DOI: ${ref.doi}`}{" "}
+                        {ref.isbn && ` ISBN: ${ref.isbn}`}{" "}
+                        {ref.pp && ` pp. ${ref.pp}`}
+                        {kind === "footnotes" &&
+                          (referenceOccurrences[`${kind}-${ref.id}`] ?? 0) >
+                            0 && (
+                            <span class="note-backlinks">
+                              {Array.from(
+                                {
+                                  length:
+                                    referenceOccurrences[`${kind}-${ref.id}`],
+                                },
+                                (_, i) => (
+                                  <a
+                                    data-note-backref
+                                    href={`#${kind}-${ref.id}-ref-${i + 1}`}
+                                    aria-label={`Back to note ${ref.id}, occurrence ${i + 1}`}
+                                  >
+                                    {referenceOccurrences[`${kind}-${ref.id}`] >
+                                    1
+                                      ? `↩ ${i + 1}`
+                                      : "↩"}
+                                  </a>
+                                )
+                              )}
+                            </span>
+                          )}
+                      </li>
+                    ))}
+                  </ol>
+                </>
+              </section>
+            ) : null;
+          })
+        }
+      </article><nav class="post-links" aria-label="Adjacent posts">
+        {
+          newer ? (
+            <a
+              class="post-link-newer"
+              href={
+                getPath(
+                  newer.id,
+                  newer.filePath,
+                  true,
+                  newer.data.pubDatetime
+                ) + "/"
+              }
+            >
+              <span class="post-link-arrow" aria-hidden="true">
+                ←
+              </span>
+              <span class="post-link-title">{newer.data.title}</span>
+            </a>
+          ) : (
+            <span />
+          )
+        }{
+          older && (
+            <a
+              class="post-link-older"
+              href={
+                getPath(
+                  older.id,
+                  older.filePath,
+                  true,
+                  older.data.pubDatetime
+                ) + "/"
+              }
+            >
+              <span class="post-link-title">{older.data.title}</span>
+              <span class="post-link-arrow" aria-hidden="true">
+                →
+              </span>
+            </a>
+          )
+        }
+      </nav>
       {
-        ["citations", "footnotes"].map(kind => {
-          const refs =
-            kind === "citations" ? post.data.citations : post.data.notes;
-          return refs?.length ? (
-            <section class="reference-list">
-              <>
-                <h2>{kind === "citations" ? "References" : "Notes"}</h2>
-                <ol>
-                  {refs.map(ref => (
-                    <li id={`${kind}-${ref.id}`}>
-                      <span class="reference-label">
-                        {`[${kind === "footnotes" ? "n " : ""}${ref.id}]`}
-                      </span>{" "}
-                      {ref.text}{" "}
-                      {ref.href && (
-                        <a href={ref.href}>{ref.linkText ?? "Source"}</a>
-                      )}{" "}
-                      {ref.archiveHref && (
-                        <a href={ref.archiveHref}>
-                          {ref.archiveLinkText ?? "Archive"}
-                        </a>
-                      )}{" "}
-                      {ref.doi && ` DOI: ${ref.doi}`}{" "}
-                      {ref.isbn && ` ISBN: ${ref.isbn}`}{" "}
-                      {ref.pp && ` pp. ${ref.pp}`}
-                      {kind === "footnotes" &&
-                        (referenceOccurrences[`${kind}-${ref.id}`] ?? 0) >
-                          0 && (
-                          <span class="note-backlinks">
-                            {Array.from(
-                              {
-                                length:
-                                  referenceOccurrences[`${kind}-${ref.id}`],
-                              },
-                              (_, i) => (
-                                <a
-                                  data-note-backref
-                                  href={`#${kind}-${ref.id}-ref-${i + 1}`}
-                                  aria-label={`Back to note ${ref.id}, occurrence ${i + 1}`}
-                                >
-                                  {referenceOccurrences[`${kind}-${ref.id}`] > 1
-                                    ? `↩ ${i + 1}`
-                                    : "↩"}
-                                </a>
-                              )
-                            )}
-                          </span>
-                        )}
-                    </li>
-                  ))}
-                </ol>
-              </>
-            </section>
-          ) : null;
-        })
-      }
-    </article><nav class="post-links" aria-label="Adjacent posts">
-      {
-        newer ? (
-          <a
-            href={
-              getPath(newer.id, newer.filePath, true, newer.data.pubDatetime) +
-              "/"
-            }
-          >
-            ← {newer.data.title}
-          </a>
-        ) : (
-          <span />
-        )
-      }{
-        older && (
-          <a
-            href={
-              getPath(older.id, older.filePath, true, older.data.pubDatetime) +
-              "/"
-            }
-          >
-            {older.data.title} →
-          </a>
+        post.data.comments && (
+          <Comments
+            pageTitle={post.data.title}
+            pageUrl={new URL(path + "/", SITE.website).href}
+          />
         )
       }
-    </nav>
+    </div>
     {
-      post.data.comments && (
-        <Comments
-          pageTitle={post.data.title}
-          pageUrl={new URL(path + "/", SITE.website).href}
-        />
+      headings.length > 0 && (
+        <aside class="toc-sidebar">
+          <TableOfContents {headings} />
+        </aside>
       )
     }
-  </main><Footer /></Layout
->
+  </main>
+  <Footer />
 
-<script src="../scripts/references.ts"></script>
+  <script src="../scripts/references.ts"></script>
+</Layout>

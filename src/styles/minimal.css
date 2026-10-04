@@ -284,14 +284,33 @@ main {
   border-top: 1px solid #eee;
   margin-top: 40px;
   padding-top: 20px;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 24px;
   font-size: 13px;
 }
 .post-links a {
-  max-width: 48%;
+  display: grid;
+  align-items: start;
+  gap: 10px;
+  min-width: 0;
+  text-decoration: none;
 }
+.post-link-newer {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+.post-link-older {
+  grid-template-columns: minmax(0, 1fr) auto;
+  text-align: right;
+}
+.post-link-title {
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
+.post-link-arrow {
+  white-space: nowrap;
+}
+
 .post-card {
   list-style: none;
   margin: 0 0 28px;
@@ -808,5 +827,192 @@ li[id^="user-content-fn-"] {
 @media (max-width: 600px) {
   .site-footer nav {
     justify-content: flex-start;
+  }
+}
+
+/* Keep the reading column centered; use its right margin only when it fits. */
+.post-content {
+  min-width: 0;
+}
+.post-toc {
+  font:
+    12px/1.6 Verdana,
+    Geneva,
+    sans-serif;
+}
+.post-toc h2,
+.post-toc summary {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+}
+.post-toc ol {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+}
+.post-toc li {
+  margin: 0 0 8px;
+  padding-left: calc(var(--toc-depth) * 10px);
+}
+.post-toc a {
+  display: block;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  padding-block: 4px;
+}
+.post-toc a:hover {
+  text-decoration: underline;
+}
+.toc-mobile {
+  margin: 24px 0;
+  padding: 12px 0;
+  border-block: 1px solid #ddd;
+}
+.toc-mobile summary {
+  cursor: pointer;
+  padding-block: 4px;
+}
+.toc-mobile summary:focus-visible {
+  outline: 2px solid #555;
+  outline-offset: 4px;
+}
+.toc-sidebar {
+  display: none;
+}
+.post-content .prose :is(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: 24px;
+}
+@media (min-width: 1240px) {
+  .post-layout.has-toc {
+    display: grid;
+    grid-template-columns: 680px 220px;
+    gap: 40px;
+    align-items: start;
+  }
+  .toc-mobile {
+    display: none;
+  }
+  .toc-sidebar {
+    display: block;
+    position: sticky;
+    top: 24px;
+    max-height: calc(100dvh - 48px);
+    overflow-y: auto;
+    border-left: 1px solid #ddd;
+    padding-left: 18px;
+  }
+}
+/* Smaller screens retain the hierarchy without oversized headings or prose. */
+@media (max-width: 767px) {
+  body {
+    font-size: 14px;
+  }
+  .prose {
+    font-size: 19px;
+  }
+  h1 {
+    font-size: 22px;
+  }
+  h2 {
+    font-size: 19px;
+  }
+  h3 {
+    font-size: 16px;
+  }
+  .article-heading h1 {
+    font-size: 29px;
+  }
+  .prose h1 {
+    font-size: 26px;
+  }
+  .prose h2 {
+    font-size: 24px;
+  }
+  .prose h3 {
+    font-size: 22px;
+  }
+  .prose h4 {
+    font-size: 21px;
+  }
+  .prose h5 {
+    font-size: 19px;
+  }
+  .prose h6 {
+    font-size: 18px;
+  }
+  .site-name {
+    font-size: 18px;
+  }
+  .header-inner nav {
+    font-size: 12px;
+  }
+  .timeline h3,
+  .post-card h2 {
+    font-size: 16px;
+  }
+  .timeline-year > h2 {
+    font-size: 12px;
+  }
+  .post-subtitle {
+    font-size: 13px;
+  }
+  .post-meta,
+  .post-links {
+    font-size: 11px;
+  }
+  .archive-title {
+    font-size: 14px;
+  }
+  .archive-date {
+    font-size: 11px;
+  }
+  .muted,
+  .subscribe-rss {
+    font-size: 12px;
+  }
+  .reference-card {
+    font-size: 18px;
+  }
+}
+
+.toc-desktop a {
+  padding-inline: 10px;
+}
+.toc-desktop a[aria-current="location"] {
+  color: #222;
+  background: #f0ede5;
+  box-shadow: inset 3px 0 #555;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.article-heading {
+  margin-bottom: 36px;
+}
+.article-heading .post-meta {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 20px;
+  font-size: 13px;
+}
+.article-heading .post-meta time {
+  font-size: 15px;
+  color: #444;
+}
+.article-heading .post-series {
+  order: 1;
+}
+.article-heading .post-tags {
+  order: 2;
+}
+@media (max-width: 767px) {
+  .article-heading .post-meta {
+    font-size: 12px;
+    margin-top: 16px;
+  }
+  .article-heading .post-meta time {
+    font-size: 14px;
   }
 }
