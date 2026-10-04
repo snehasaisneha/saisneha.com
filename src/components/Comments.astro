@@ -81,7 +81,9 @@ const tenant = (
             .fast-comments textarea.comment-input,.comment-text,.comment-text-edit{font-family:"EB Garamond",Garamond,Georgia,serif;font-size:22px;line-height:1.65}
             .fast-comments .solicitation-info{display:none}
             .fast-comments{--fc-input-border-radius:0;--fc-input-border-start-start-radius:0;--fc-input-border-color:#bbb;color:#222}
-            .fast-comments .comment-reply.root{padding:0;margin:8px 0 16px}
+            .fast-comments .comment-reply.root{padding:0;margin:8px 0 0}
+            .fast-comments .comments:empty{padding:0}
+            .fast-comments .comment-reply .auth-input{margin-bottom:0}
             .fast-comments div.comment-input{padding-bottom:0;border-radius:0}
             .fast-comments textarea.comment-input{height:110px;min-height:110px;padding:10px 12px;border:1px solid #bbb;border-radius:0;resize:vertical;background:#fff}
             .fast-comments .horizontal-border-wrapper{display:none}
@@ -145,6 +147,6 @@ const tenant = (
       Geneva,
       sans-serif;
     color: #666;
-    margin: 12px 0;
+    margin: 8px 0;
   }
 </style>

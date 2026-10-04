@@ -1016,3 +1016,13 @@ li[id^="user-content-fn-"] {
     font-size: 14px;
   }
 }
+
+.back-to-top {
+  margin: 28px 0 0;
+  text-align: right;
+  font-size: 12px;
+}
+.back-to-top a {
+  display: inline-block;
+  padding-block: 10px;
+}
