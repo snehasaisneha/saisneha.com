@@ -15,7 +15,7 @@ import { SITE } from "./src/config";
 export default defineConfig({
   site: SITE.website,
   output: "static",
-  redirects: { "/about": "/" },
+  redirects: { "/about": "/", "/housekeeping": "/source/" },
   prefetch: { defaultStrategy: "hover" },
   integrations: [sitemap()],
   markdown: {

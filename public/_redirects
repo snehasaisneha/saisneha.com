@@ -4,4 +4,6 @@
 /feed.xml  /rss.xml  301
 /rss  /rss.xml  301
 /index.xml  /rss.xml  301
+/housekeeping  /source/  301!
+/housekeeping/  /source/  301!
 /*  /404.html  404

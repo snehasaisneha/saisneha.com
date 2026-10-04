@@ -46,7 +46,7 @@ Post permalinks include their date and filename. Preserve them when editing to a
 
 ## Integrations
 
-The subscription form posts directly to Buttondown for `snehakanmani`; no secret or client library is needed.
+The subscription form uses Buttondown’s hosted iframe at `https://buttondown.com/snehakanmani?as_embed=true`, keeping signup, CAPTCHA, validation, and confirmation inside the page. No API key is needed. Leave scrolling enabled so longer responses remain accessible. Do not replace this with `fetch` against `embed-subscribe` or treat an iframe load as subscription success. Buttondown requires double opt-in by default; account-specific exceptions must be checked with Buttondown. The iframe’s wording and styling are controlled by Buttondown, not the parent site’s CSS.
 
 FastComments uses the public tenant ID in `src/config.ts`. `PUBLIC_FASTCOMMENTS_TENANT_ID` optionally overrides it; an explicitly empty value disables comments globally. Email is optional and username is required. The widget loads near the comment section and uses the production article URL as its thread ID, including on local previews. Changing the permalink requires migrating the thread separately.
 
