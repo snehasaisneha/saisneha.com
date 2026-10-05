@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import rehypeReferences from "./src/plugins/rehype-references.js";
+import rehypeSearchText from "./src/plugins/rehype-search-text.js";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import {
@@ -19,7 +20,7 @@ export default defineConfig({
   prefetch: { defaultStrategy: "hover" },
   integrations: [sitemap()],
   markdown: {
-    rehypePlugins: [rehypeReferences],
+    rehypePlugins: [rehypeReferences, rehypeSearchText],
     remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
     shikiConfig: {
       // For more themes, visit https://shiki.style/themes

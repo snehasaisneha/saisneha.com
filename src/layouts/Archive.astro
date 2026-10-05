@@ -3,11 +3,11 @@ import Layout from "./Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import PageNav from "@/components/PageNav.astro";
-import { writing, ARCHIVE_SIZE } from "@/utils/writing";
+import { archiveWriting, ARCHIVE_SIZE } from "@/utils/writing";
 import { SITE } from "@/config";
 type Props = { page?: number };
 const { page = 1 } = Astro.props;
-const posts = await writing();
+const posts = await archiveWriting();
 const total = Math.max(1, Math.ceil(posts.length / ARCHIVE_SIZE));
 const years = [...new Set(posts.map(p => p.year))];
 const tags = [...new Set(posts.flatMap(p => p.tags))].sort();
@@ -22,7 +22,7 @@ const series = [
     <div id="archive" data-page={page} data-size={ARCHIVE_SIZE}>
       <form class="archive-filters" id="archive-filters" hidden>
         <label class="archive-search"
-          >Search titles and subtitles
+          >Search posts
           <input type="search" name="q" autocomplete="off" />
         </label>
         <label

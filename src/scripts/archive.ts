@@ -1,7 +1,7 @@
-import type { Writing } from "@/utils/writing";
+import type { ArchiveWriting } from "@/utils/writing";
 const root = document.querySelector<HTMLElement>("#archive");
 if (root) {
-  const posts: Writing[] = JSON.parse(
+  const posts: ArchiveWriting[] = JSON.parse(
     document.querySelector("#archive-data")!.textContent!
   );
   const form = document.querySelector<HTMLFormElement>("#archive-filters")!;
@@ -29,7 +29,7 @@ if (root) {
         : Number(root!.dataset.page);
   }
   function render(updateURL = false) {
-    const q = field("q").value.trim().toLocaleLowerCase();
+    const q = field("q").value.trim().replace(/\s+/gu, " ").toLowerCase();
     const year = field("year").value;
     const tags = tagInputs
       .filter(input => input.checked)
@@ -37,7 +37,7 @@ if (root) {
     const series = field("series").value;
     const filtered = posts.filter(
       p =>
-        (!q || `${p.title} ${p.subtitle}`.toLocaleLowerCase().includes(q)) &&
+        (!q || p.searchText.includes(q)) &&
         (!year || p.year === year) &&
         (!tags.length || tags.some(tag => p.tags.includes(tag))) &&
         (!series || p.series.some(s => s.id === series))

@@ -1,4 +1,4 @@
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import getSortedPosts from "./getSortedPosts";
 import { slugifyStr } from "./slugify";
 import { getPath } from "./getPath";
@@ -34,6 +34,49 @@ export async function writing() {
   }));
 }
 export type Writing = Awaited<ReturnType<typeof writing>>[number];
+
+/** Full text is shipped only on archive pages, regenerated with each build. */
+export async function archiveWriting() {
+  const [entries, posts] = await Promise.all([
+    getCollection("blog"),
+    writing(),
+  ]);
+  const byId = new Map(entries.map(entry => [entry.id, entry]));
+  return Promise.all(
+    posts.map(async post => {
+      const entry = byId.get(post.id)!;
+      const { remarkPluginFrontmatter } = await render(entry);
+      const references = [
+        ...(entry.data.notes ?? []),
+        ...(entry.data.citations ?? []),
+      ];
+      return {
+        ...post,
+        searchText: [
+          post.title,
+          post.subtitle,
+          remarkPluginFrontmatter.searchText ?? "",
+          ...references.map(ref =>
+            [
+              ref.text,
+              ref.linkText,
+              ref.archiveLinkText,
+              ref.doi,
+              ref.isbn,
+              ref.pp,
+            ]
+              .filter(Boolean)
+              .join(" ")
+          ),
+        ]
+          .join(" ")
+          .replace(/\s+/gu, " ")
+          .toLowerCase(),
+      };
+    })
+  );
+}
+export type ArchiveWriting = Awaited<ReturnType<typeof archiveWriting>>[number];
 
 /** Archived posts remain public, but do not occupy homepage slots. */
 export async function homeWriting() {

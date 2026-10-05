@@ -40,7 +40,7 @@ tags: []
 - Add `archive` to tags to hide a post from the homepage while retaining its article, archive, feeds, and taxonomy listings.
 - Set `comments: false` to omit comments and their script for a post.
 - Optional `series` values link posts to series. Citation and note metadata are supported by the post layout.
-- Homepage pagination is 20 posts; archives show up to 100 per page with search, year, tag, and series filters. Limits live in `src/utils/writing.ts`.
+- Homepage pagination is 20 posts; archives show up to 100 per page with search, year, tag, and series filters. Limits live in `src/utils/writing.ts`. Archive search matches case-insensitive text in titles, subtitles, rendered post bodies, notes, and references. Its plain-text index is embedded only in archive pages and regenerated on every build/deploy, with the same draft/future-post filtering as the public archive. Archived posts remain searchable. There is no separate search cache to clear; rebuild and refresh after content changes.
 
 Post permalinks include their date and filename. Preserve them when editing to avoid breaking links and comment threads. Legacy URL routes and `public/_redirects` retain earlier links.
 
@@ -54,6 +54,7 @@ Before deploying this integration:
 2. In Netlify, add `BUTTONDOWN_API_KEY` under the project's environment variables, with **Functions** scope and the relevant deploy contexts (or all scopes if scoped variables are unavailable). Store it as a secret; never prefix it with `PUBLIC_`, put it in `netlify.toml`, or commit it.
 3. Redeploy after setting the key. A missing key returns a service-unavailable response and does not show confirmation.
 4. Test one signup with an address you control and check the confirmation email. Unit tests mock Buttondown and do not send email.
+5. Set Buttondown’s post-confirmation redirect (`subscription_confirmation_redirect_url`) to `https://saisneha.com/thank-you/`. This is the destination after the reader clicks the double-opt-in email link, not the initial signup redirect. The page links to `/#about` and `/archives/`.
 
 The function applies same-origin and input checks, a honeypot, and Netlify's code-based limit of five requests per minute per IP/domain. It passes Netlify's trusted client IP to Buttondown for its validation; it does not log emails or upstream response bodies. Rate-limit enforcement is managed by Netlify and must be checked on the deployed function. This is not a CAPTCHA integration.
 

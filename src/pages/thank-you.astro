@@ -1,0 +1,15 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { SITE } from "@/config";
+---
+
+<Layout title={`Thank you for subscribing | ${SITE.title}`}>
+  <Header />
+  <main id="main-content" class="shell">
+    <h1>Thank you for subscribing</h1>
+    <p><a href="/#about">About Me</a> · <a href="/archives/">Archive</a></p>
+  </main>
+  <Footer />
+</Layout>
