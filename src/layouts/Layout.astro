@@ -1,5 +1,7 @@
 ---
 import { SITE } from "@/config";
+import { createHash } from "node:crypto";
+import faviconSource from "../../public/favicon.svg?raw";
 import "@/styles/minimal.css";
 type Props = {
   title?: string;
@@ -25,6 +27,28 @@ const {
 } = Astro.props;
 const canonical = canonicalURL ?? new URL(Astro.url.pathname, SITE.website);
 const social = new URL(ogImage, SITE.website);
+// Temporary previews must serve their own images, not the deployed site's.
+if (
+  import.meta.env.PUBLIC_PREVIEW_ORIGIN &&
+  social.origin === new URL(SITE.website).origin
+) {
+  const preview = new URL(import.meta.env.PUBLIC_PREVIEW_ORIGIN);
+  social.protocol = preview.protocol;
+  social.host = preview.host;
+}
+if (ogImage === "/og.png") {
+  social.searchParams.set(
+    "v",
+    createHash("sha256")
+      .update(`${SITE.title}\n${SITE.desc}`)
+      .digest("hex")
+      .slice(0, 12)
+  );
+}
+const iconVersion = createHash("sha256")
+  .update(faviconSource)
+  .digest("hex")
+  .slice(0, 12);
 const structured = pubDatetime
   ? {
       "@context": "https://schema.org",
@@ -50,9 +74,28 @@ const structured = pubDatetime
       name="author"
       content={author}
     />
-    <link rel="canonical" href={canonical} /><link
+    <link rel="canonical" href={canonical} />
+    <link
       rel="icon"
-      href="/favicon.svg"
+      href={`/favicon.ico?v=${iconVersion}`}
+      sizes="16x16 32x32 48x48"
+    />
+    <link
+      rel="icon"
+      href={`/favicon-32.png?v=${iconVersion}`}
+      type="image/png"
+      sizes="32x32"
+    />
+    <link
+      rel="icon"
+      href={`/favicon.svg?v=${iconVersion}`}
+      type="image/svg+xml"
+      sizes="any"
+    />
+    <link
+      rel="apple-touch-icon"
+      href={`/apple-touch-icon.png?v=${iconVersion}`}
+      sizes="180x180"
     />
     <link
       rel="alternate"

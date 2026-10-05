@@ -807,6 +807,18 @@ li[id^="user-content-fn-"] {
 .home-introduction {
   overflow-wrap: anywhere;
 }
+@media (min-width: 768px) {
+  .home-introduction {
+    font-size: 20px;
+    line-height: 1.5;
+  }
+  .home-introduction p {
+    margin-block: 12px;
+  }
+  .home-divider {
+    margin-block: 28px;
+  }
+}
 .header-inner nav {
   flex-wrap: wrap;
 }

@@ -118,3 +118,9 @@ Use `citations:` for sources and `notes:` for asides, with `[1]` and `[n 1]` mar
 Legacy `footnotes:` frontmatter is accepted as an alias for `notes:`. Do not supply both fields in one post: validation rejects this to avoid silently losing entries. Existing `#footnotes-ID` URL fragments are retained for compatibility. Native Markdown `[^id]` footnotes still render for older content, but use `notes:` for new posts to avoid a second, separate Footnotes section.
 
 The build plugin is `src/plugins/rehype-references.js`, registered under `markdown.rehypePlugins` in `astro.config.ts`. Frontmatter validation lives in `src/content.config.ts`; the lists are rendered by `src/layouts/PostDetails.astro` and styled in `src/styles/minimal.css`. Run `node --test tests/references.test.mjs` to check marker conversion.
+
+## Favicons
+
+`public/favicon.svg` is the source of the EB Garamond “sk” logo. `pnpm run icons` generates the 16/32/48px ICO, 32px PNG fallback, and opaque 180px Apple touch icon; this also runs automatically before every production build. The shared layout versions icon URLs using a hash of the SVG so logo changes refresh browser caches. Keep the SVG outlines and font license when updating the logo.
+
+For a temporary public preview, build with `PUBLIC_PREVIEW_ORIGIN=https://your-tunnel.trycloudflare.com` so social-image metadata points to that preview's assets. Omit this variable in production; canonical URLs continue to point to `saisneha.com`. The default social image URL includes a version derived from the site title and description to refresh image caches after wording changes.

@@ -47,5 +47,5 @@ export async function generateOgImageForPost(post: CollectionEntry<"blog">) {
   );
 }
 export async function generateOgImageForSite() {
-  return card("Essays, thoughts, and things along the way.", "saisneha.com");
+  return card(SITE.desc, "saisneha.com");
 }

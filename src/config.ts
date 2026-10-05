@@ -2,7 +2,7 @@ export const SITE = {
   website: "https://saisneha.com/",
   fastCommentsTenantId: "vZ9PhguIi-_",
   author: "Sneha Kanmani",
-  desc: "Personal essays, technical rambles, and ongoing experiments in writing a more intentional life.",
+  desc: "Personal essays, technical rambles, and ongoing experiments in living a more intentional life.",
   title: "sneha kanmani",
   postPerPage: 20,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
