@@ -1,8 +1,43 @@
-<div class="newsletter-embed">
-  <iframe
-    title="Subscribe by email"
-    src="https://buttondown.com/snehakanmani?as_embed=true"></iframe>
-  <p class="muted">Check your inbox to confirm your subscription.</p>
+<form
+  class="newsletter-form"
+  action="https://buttondown.com/api/emails/embed-subscribe/snehakanmani"
+  method="post"
+  data-newsletter-form
+>
+  <label for="newsletter-email">
+    Email address
+    <input
+      id="newsletter-email"
+      type="email"
+      name="email"
+      autocomplete="email"
+      required
+      maxlength="254"
+    />
+  </label>
+  <input type="hidden" name="embed" value="1" />
+  <div class="newsletter-trap" aria-hidden="true" inert>
+    <label
+      >Website <input
+        type="text"
+        name="website"
+        tabindex="-1"
+        autocomplete="off"
+      /></label
+    >
+  </div>
+  <button type="submit">Subscribe</button>
+  <p
+    class="muted"
+    role="status"
+    aria-live="polite"
+    data-newsletter-status
+    hidden
+  >
+  </p>
+  <p class="muted" data-newsletter-fallback hidden>
+    <a href="https://buttondown.com/snehakanmani">Subscribe on Buttondown</a>
+  </p>
   <p class="muted">
     Powered by <a
       href="https://buttondown.com/refer/snehakanmani"
@@ -10,13 +45,76 @@
       rel="noopener noreferrer">Buttondown</a
     >.
   </p>
-</div>
+</form>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>(
+    "[data-newsletter-form]"
+  );
+  if (form) {
+    const button = form.querySelector<HTMLButtonElement>(
+      'button[type="submit"]'
+    )!;
+    const status = form.querySelector<HTMLParagraphElement>(
+      "[data-newsletter-status]"
+    )!;
+    const fallback = form.querySelector<HTMLParagraphElement>(
+      "[data-newsletter-fallback]"
+    )!;
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (button.disabled) return;
+      button.disabled = true;
+      button.textContent = "Subscribing…";
+      form.setAttribute("aria-busy", "true");
+      status.hidden = true;
+      fallback.hidden = true;
+      try {
+        const data = new FormData(form);
+        const response = await fetch("/api/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: data.get("email"),
+            website: data.get("website"),
+          }),
+          signal: AbortSignal.timeout(15000),
+        });
+        const result = await response.json().catch(() => null);
+        if (!response.ok || result?.status !== "pending") {
+          throw new Error(
+            response.status === 429
+              ? "Too many attempts. Please try again later."
+              : "Unable to complete your subscription here. Please try again or subscribe on Buttondown."
+          );
+        }
+        status.textContent = "Check your inbox to confirm your subscription.";
+        form.reset();
+      } catch (error) {
+        status.textContent =
+          error instanceof Error && error.name === "Error"
+            ? error.message
+            : "Unable to complete your subscription here. Please try again or subscribe on Buttondown.";
+        fallback.hidden = false;
+      } finally {
+        status.hidden = false;
+        button.disabled = false;
+        button.textContent = "Subscribe";
+        form.removeAttribute("aria-busy");
+      }
+    });
+  }
+</script>
 
 <style>
-  iframe {
-    display: block;
-    width: 100%;
-    height: 320px;
-    border: 0;
+  .newsletter-trap {
+    display: none;
+  }
+  [hidden] {
+    display: none;
+  }
+  button:disabled {
+    opacity: 0.65;
+    cursor: wait;
   }
 </style>

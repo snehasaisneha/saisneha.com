@@ -46,7 +46,18 @@ Post permalinks include their date and filename. Preserve them when editing to a
 
 ## Integrations
 
-The subscription form uses Buttondown’s hosted iframe at `https://buttondown.com/snehakanmani?as_embed=true`, keeping signup, CAPTCHA, validation, and confirmation inside the page. No API key is needed. Leave scrolling enabled so longer responses remain accessible. Do not replace this with `fetch` against `embed-subscribe` or treat an iframe load as subscription success. Buttondown requires double opt-in by default; account-specific exceptions must be checked with Buttondown. The iframe’s wording and styling are controlled by Buttondown, not the parent site’s CSS.
+The subscription form uses the site's own styling and posts to `/api/subscribe`, a Netlify Function in `netlify/functions/subscribe.mjs`. It calls Buttondown's subscriber API on the server with `type: unactivated`, preserving double opt-in. The browser shows “Check your inbox to confirm your subscription.” only after Buttondown accepts the request and returns that pending state. Errors, duplicates, and blocked subscribers are not treated as successful subscriptions; the form retains the email and offers a Buttondown link. Without JavaScript, the ordinary HTML form submits to Buttondown's hosted flow.
+
+Before deploying this integration:
+
+1. Get the API key for the `snehakanmani` newsletter from [Buttondown's API requests page](https://buttondown.com/requests).
+2. In Netlify, add `BUTTONDOWN_API_KEY` under the project's environment variables, with **Functions** scope and the relevant deploy contexts (or all scopes if scoped variables are unavailable). Store it as a secret; never prefix it with `PUBLIC_`, put it in `netlify.toml`, or commit it.
+3. Redeploy after setting the key. A missing key returns a service-unavailable response and does not show confirmation.
+4. Test one signup with an address you control and check the confirmation email. Unit tests mock Buttondown and do not send email.
+
+The function applies same-origin and input checks, a honeypot, and Netlify's code-based limit of five requests per minute per IP/domain. It passes Netlify's trusted client IP to Buttondown for its validation; it does not log emails or upstream response bodies. Rate-limit enforcement is managed by Netlify and must be checked on the deployed function. This is not a CAPTCHA integration.
+
+`pnpm dev` and `pnpm preview` serve Astro only; use Netlify Dev with the server-only environment variable to test live inline submissions locally. Static previews still show the form but cannot run the function. The rest of the website remains static.
 
 FastComments uses the public tenant ID in `src/config.ts`. `PUBLIC_FASTCOMMENTS_TENANT_ID` optionally overrides it; an explicitly empty value disables comments globally. Email is optional and username is required. The widget loads near the comment section and uses the production article URL as its thread ID, including on local previews. Changing the permalink requires migrating the thread separately.
 

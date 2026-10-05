@@ -542,7 +542,7 @@ button:disabled {
   max-width: 100%;
 }
 .newsletter-form label {
-  flex: 1 1 240px;
+  flex: 0 1 300px;
   min-width: 0;
 }
 .newsletter-form input[type="email"] {
