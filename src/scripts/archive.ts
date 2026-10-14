@@ -1,3 +1,4 @@
+import { prefetch } from "astro:prefetch";
 import type { ArchiveWriting } from "@/utils/writing";
 const root = document.querySelector<HTMLElement>("#archive");
 if (root) {
@@ -57,6 +58,24 @@ if (root) {
       a.className = "archive-title";
       a.href = p.url;
       a.textContent = p.title;
+      // Filtering replaces links after Astro's initial hover listeners run.
+      // Bind intent listeners to each new result, sharing Astro's URL deduplication.
+      a.dataset.astroPrefetch = "false";
+      let hoverTimer: ReturnType<typeof setTimeout> | undefined;
+      const cancelPrefetch = () => clearTimeout(hoverTimer);
+      const schedulePrefetch = () => {
+        cancelPrefetch();
+        hoverTimer = setTimeout(() => prefetch(a.href), 80);
+      };
+      a.addEventListener("mouseenter", schedulePrefetch);
+      a.addEventListener("mouseleave", cancelPrefetch);
+      a.addEventListener("focus", schedulePrefetch);
+      a.addEventListener("blur", cancelPrefetch);
+      a.addEventListener(
+        "touchstart",
+        () => prefetch(a.href, { ignoreSlowConnection: true }),
+        { passive: true }
+      );
       const meta = document.createElement("div");
       meta.className = "archive-meta";
       meta.textContent = [

@@ -4,7 +4,7 @@
   "version": "5.5.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "pnpm run icons && astro check && astro build",
+    "build": "pnpm run icons && astro check && astro build && node scripts/draft-redirects.mjs",
     "preview": "astro preview",
     "sync": "astro sync",
     "astro": "astro",
@@ -12,6 +12,7 @@
     "format": "prettier --write .",
     "lint": "eslint .",
     "test": "node --test tests/*.test.mjs",
+    "drafts:sync": "node scripts/draft-preview-ids.mjs",
     "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
@@ -23,7 +24,8 @@
     "remark-collapse": "^0.1.2",
     "remark-toc": "^9.0.0",
     "sharp": "^0.34.5",
-    "slugify": "^1.6.6"
+    "slugify": "^1.6.6",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.6",

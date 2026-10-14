@@ -14,6 +14,7 @@ type Props = {
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
   article?: boolean;
+  noindex?: boolean;
 };
 const {
   title = SITE.title,
@@ -23,7 +24,7 @@ const {
   canonicalURL,
   pubDatetime,
   modDatetime,
-  article = false,
+  noindex = false,
 } = Astro.props;
 const canonical = canonicalURL ?? new URL(Astro.url.pathname, SITE.website);
 const social = new URL(ogImage, SITE.website);
@@ -40,7 +41,7 @@ if (ogImage === "/og.png") {
   social.searchParams.set(
     "v",
     createHash("sha256")
-      .update(`${SITE.title}\n${SITE.desc}`)
+      .update(`monogram-subtitle-v2\n${SITE.title}\n${SITE.desc}`)
       .digest("hex")
       .slice(0, 12)
   );
@@ -49,18 +50,19 @@ const iconVersion = createHash("sha256")
   .update(faviconSource)
   .digest("hex")
   .slice(0, 12);
-const structured = pubDatetime
-  ? {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      headline: title,
-      description,
-      image: social.href,
-      datePublished: pubDatetime.toISOString(),
-      ...(modDatetime ? { dateModified: modDatetime.toISOString() } : {}),
-      author: { "@type": "Person", name: author },
-    }
-  : null;
+const structured =
+  pubDatetime && !noindex
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: title,
+        description,
+        image: social.href,
+        datePublished: pubDatetime.toISOString(),
+        ...(modDatetime ? { dateModified: modDatetime.toISOString() } : {}),
+        author: { "@type": "Person", name: author },
+      }
+    : null;
 ---
 
 <!doctype html>
@@ -74,7 +76,9 @@ const structured = pubDatetime
       name="author"
       content={author}
     />
-    <link rel="canonical" href={canonical} />
+    {!noindex && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {noindex && <meta name="referrer" content="no-referrer" />}
     <link
       rel="icon"
       href={`/favicon.ico?v=${iconVersion}`}
@@ -115,17 +119,13 @@ const structured = pubDatetime
       name="twitter:image"
       content={social}
     />
-    {
-      article && (
-        <link
-          rel="preload"
-          href="/fonts/eb-garamond/eb-garamond-latin-normal.woff2"
-          as="font"
-          type="font/woff2"
-          crossorigin
-        />
-      )
-    }
+    <link
+      rel="preload"
+      href="/fonts/eb-garamond/eb-garamond-latin-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     {
       structured && (
         <script

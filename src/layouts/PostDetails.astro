@@ -8,25 +8,44 @@ import Comments from "@/components/Comments.astro";
 import PostMeta from "@/components/PostMeta.astro";
 import { writing } from "@/utils/writing";
 import { getPath } from "@/utils/getPath";
+import { createHash } from "node:crypto";
 import { SITE } from "@/config";
 type Props = {
+  draftVersion?: string;
   post: CollectionEntry<"blog">;
   posts: CollectionEntry<"blog">[];
   seriesBySlug: Record<string, { title: string }>;
 };
-const { post, posts } = Astro.props;
+const { post, posts, draftVersion } = Astro.props;
+const isPreview = !!draftVersion;
 const { Content, headings, remarkPluginFrontmatter } = await render(post);
 const referenceOccurrences = (remarkPluginFrontmatter.referenceOccurrences ??
   {}) as Record<string, number>;
 const info = (await writing()).find(p => p.id === post.id)!;
-const path = getPath(post.id, post.filePath, true, post.data.pubDatetime);
+const path = isPreview
+  ? `/drafts/${post.data.previewId}`
+  : getPath(post.id, post.filePath, true, post.data.pubDatetime);
 const index = posts.findIndex(p => p.id === post.id);
 const newer = posts[index - 1];
 const older = posts[index + 1];
-const image =
-  typeof post.data.ogImage === "string"
+const imageVersion = createHash("sha256")
+  .update(
+    JSON.stringify([
+      "monogram-subtitle-v2",
+      SITE.title,
+      SITE.timezone,
+      post.data.title,
+      post.data.subtitle,
+      post.data.pubDatetime,
+    ])
+  )
+  .digest("hex")
+  .slice(0, 12);
+const image = isPreview
+  ? `${path}/index.png?v=${draftVersion}`
+  : typeof post.data.ogImage === "string"
     ? post.data.ogImage
-    : (post.data.ogImage?.src ?? `${path}/index.png`);
+    : (post.data.ogImage?.src ?? `${path}/index.png?v=${imageVersion}`);
 ---
 
 <Layout
@@ -37,6 +56,7 @@ const image =
   canonicalURL={post.data.canonicalURL}
   ogImage={image}
   article
+  noindex={isPreview}
 >
   <Header /><main
     id="main-content"
@@ -44,13 +64,14 @@ const image =
   >
     <div class="post-content">
       <header class="article-heading">
+        {isPreview && <p class="draft-label">Draft</p>}
         <h1>{post.data.title}</h1>
         {
           post.data.subtitle && (
             <p class="post-subtitle">{post.data.subtitle}</p>
           )
         }
-        <PostMeta post={info} />
+        {!isPreview && <PostMeta post={info} />}
       </header>
       {headings.length > 0 && <TableOfContents {headings} mobile />}
       <article class="prose">
@@ -115,51 +136,54 @@ const image =
         }
       </article>
       <p class="back-to-top"><a href="#main-content">Back to top ↑</a></p>
-      <nav class="post-links" aria-label="Adjacent posts">
-        {
-          newer ? (
-            <a
-              class="post-link-newer"
-              href={
-                getPath(
-                  newer.id,
-                  newer.filePath,
-                  true,
-                  newer.data.pubDatetime
-                ) + "/"
-              }
-            >
-              <span class="post-link-arrow" aria-hidden="true">
-                ←
-              </span>
-              <span class="post-link-title">{newer.data.title}</span>
-            </a>
-          ) : (
-            <span />
-          )
-        }{
-          older && (
-            <a
-              class="post-link-older"
-              href={
-                getPath(
-                  older.id,
-                  older.filePath,
-                  true,
-                  older.data.pubDatetime
-                ) + "/"
-              }
-            >
-              <span class="post-link-title">{older.data.title}</span>
-              <span class="post-link-arrow" aria-hidden="true">
-                →
-              </span>
-            </a>
-          )
-        }
-      </nav>
       {
-        post.data.comments && (
+        !isPreview && (
+          <nav class="post-links" aria-label="Adjacent posts">
+            {newer ? (
+              <a
+                data-astro-prefetch
+                class="post-link-newer"
+                href={
+                  getPath(
+                    newer.id,
+                    newer.filePath,
+                    true,
+                    newer.data.pubDatetime
+                  ) + "/"
+                }
+              >
+                <span class="post-link-arrow" aria-hidden="true">
+                  ←
+                </span>
+                <span class="post-link-title">{newer.data.title}</span>
+              </a>
+            ) : (
+              <span />
+            )}
+            {older && (
+              <a
+                data-astro-prefetch
+                class="post-link-older"
+                href={
+                  getPath(
+                    older.id,
+                    older.filePath,
+                    true,
+                    older.data.pubDatetime
+                  ) + "/"
+                }
+              >
+                <span class="post-link-title">{older.data.title}</span>
+                <span class="post-link-arrow" aria-hidden="true">
+                  →
+                </span>
+              </a>
+            )}
+          </nav>
+        )
+      }
+      {
+        !isPreview && post.data.comments && (
           <Comments
             pageTitle={post.data.title}
             pageUrl={new URL(path + "/", SITE.website).href}
@@ -176,6 +200,7 @@ const image =
     }
   </main>
   <Footer />
+  <slot name="draft-updates" />
 
   <script src="../scripts/references.ts"></script>
 </Layout>

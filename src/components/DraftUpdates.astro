@@ -1,0 +1,52 @@
+---
+type Props = { version: string };
+const { version } = Astro.props;
+---
+
+<div class="draft-update" data-draft-version={version} hidden>
+  <span role="status" aria-live="polite">New version available</span>
+  <button type="button">Reload</button>
+</div>
+<script src="../scripts/draft-updates.ts"></script>
+<style>
+  .draft-update:not([hidden]) {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    position: fixed;
+    bottom: max(20px, env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 40;
+    width: max-content;
+    max-width: calc(100% - 32px);
+    padding: 12px 18px;
+    background: #222;
+    color: #faf9f6;
+    border: 1px solid #222;
+    box-shadow: 0 3px 12px #0003;
+    font:
+      14px/1.5 Verdana,
+      sans-serif;
+  }
+  button {
+    background: #faf9f6;
+    color: #222;
+    border: 1px solid #faf9f6;
+    padding: 8px 14px;
+    min-height: 44px;
+    font: inherit;
+    cursor: pointer;
+  }
+  button:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 4px;
+  }
+  @media (max-width: 400px) {
+    .draft-update:not([hidden]) {
+      gap: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+    }
+  }
+</style>

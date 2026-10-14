@@ -4,10 +4,11 @@ import { SITE } from "@/config";
 
 <header class="site-header">
   <div class="shell header-inner">
-    <a class="site-name" href="/">{SITE.title}</a>
+    <a data-astro-prefetch class="site-name" href="/">{SITE.title}</a>
     <nav aria-label="Main navigation">
-      <a href="/archives/">Archive</a><a href="/subscribe/"
-        >Following this blog</a
+      <a data-astro-prefetch href="/archives/">Archive</a><a
+        data-astro-prefetch
+        href="/subscribe/">Following this blog</a
       >
     </nav>
   </div>

@@ -1,4 +1,5 @@
 import { defineConfig } from "astro/config";
+import draftPreviewIds from "./src/integrations/draft-preview-ids.mjs";
 import sitemap from "@astrojs/sitemap";
 import rehypeReferences from "./src/plugins/rehype-references.js";
 import rehypeSearchText from "./src/plugins/rehype-search-text.js";
@@ -18,7 +19,10 @@ export default defineConfig({
   output: "static",
   redirects: { "/about": "/", "/housekeeping": "/source/" },
   prefetch: { defaultStrategy: "hover" },
-  integrations: [sitemap()],
+  integrations: [
+    draftPreviewIds(),
+    sitemap({ filter: page => !new URL(page).pathname.startsWith("/drafts/") }),
+  ],
   markdown: {
     rehypePlugins: [rehypeReferences, rehypeSearchText],
     remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],

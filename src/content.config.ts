@@ -47,6 +47,12 @@ const blog = defineCollection({
         title: z.string(),
         featured: z.boolean().optional(),
         draft: z.boolean().optional(),
+        draftPreview: z.boolean().default(false),
+        previewId: z
+          .string()
+          .uuid()
+          .transform(value => value.toLowerCase())
+          .optional(),
         comments: z.boolean().default(true),
         tags: z.array(z.string()).default([]),
         ogImage: image().or(z.string()).optional(),

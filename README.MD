@@ -124,3 +124,36 @@ The build plugin is `src/plugins/rehype-references.js`, registered under `markdo
 `public/favicon.svg` is the source of the EB Garamond “sk” logo. `pnpm run icons` generates the 16/32/48px ICO, 32px PNG fallback, and opaque 180px Apple touch icon; this also runs automatically before every production build. The shared layout versions icon URLs using a hash of the SVG so logo changes refresh browser caches. Keep the SVG outlines and font license when updating the logo.
 
 For a temporary public preview, build with `PUBLIC_PREVIEW_ORIGIN=https://your-tunnel.trycloudflare.com` so social-image metadata points to that preview's assets. Omit this variable in production; canonical URLs continue to point to `saisneha.com`. The default social image URL includes a version derived from the site title and description to refresh image caches after wording changes.
+
+### Unlisted draft previews
+
+Keep drafts in `src/data/writing/` as Markdown. `draft: true` excludes them from public post routes, lists, archive search, feeds, and social-image routes. To share a draft, enable its preview:
+
+```yaml
+draft: true
+draftPreview: true
+```
+
+`pnpm dev`, `pnpm build`, and `pnpm drafts:sync` automatically add a random `previewId` UUID to the file if the switch is true and no ID exists. Dev mode also watches new and edited Markdown files. Only the new field is inserted; existing YAML formatting, comments, and prose are preserved. Commit that generated field alongside the post. CI/Netlify refuses to generate a missing ID, because an ID generated only in an ephemeral deployment would change on the next build.
+
+The two fields have separate jobs:
+
+```yaml
+draft: true
+draftPreview: false # true exposes the preview; false removes it next deployment
+previewId: "1a573f30-8a9c-4ba4-a693-72e88158a306" # generated once; retain it
+```
+
+False (or an omitted switch) never deletes or rotates the saved UUID. Re-enabling the switch restores the same URL, even if you rename the source file. Share `/drafts/<previewId>/`; there is no public draft directory. Invalid or duplicate IDs fail the build. Drafts use the regular article typography, notes, and contents, with comments and adjacent-post navigation disabled. Their social cards use the title, optional subtitle, date, monogram, and a Draft label.
+
+After each successful deployment, an open draft checks its own `version.json` every 60 seconds while visible, plus on tab focus. Content/front-matter changes show **New version available — Reload**; it never reloads automatically. Reload remembers the visible passage and viewport offset in session storage. It restores that passage after fonts/images settle, falling back to the preceding heading and then relative scroll position if content was removed. The position expires after two minutes. Offline checks fail quietly. Deleted drafts show a no-longer-available notice; published drafts offer a link to the finished post.
+
+To publish, set `draft: false` (or remove `draft`), retain `previewId` and `draftPreview: true`, and set the publication date. Once publishable, the build generates a permanent Netlify 301 from the UUID URL to the post, plus an HTML redirect for static previews. Keep both fields on the published post to preserve this redirect. Setting `draftPreview: false` disables the UUID route, version endpoint, image, and any generated redirect on the next deployment while retaining the ID. Deleting the source also removes them. New requests then return 404; disabling cannot erase copies already downloaded by readers or cached by sharing apps. A future-dated non-draft does not publish in production until its date is eligible and a build runs.
+
+Draft paths are excluded from the sitemap and have both a robots `noindex, nofollow` meta tag and Netlify `X-Robots-Tag` headers (including images/version files). They are deliberately not blocked in robots.txt, so crawlers can read those directives. HTML/version responses use `Cache-Control: no-store`. UUID links are **unlisted, not authenticated**: anyone with the URL can read/share them, and source remains visible if committed to a public repository. Social apps may cache older cards even when the versioned image URL changes. These previews are for shareable work, not confidential writing.
+
+### Loading and caching
+
+Post lists, main navigation, adjacent posts, pagination, and internal footer pages opt into Astro's hover/focus prefetch. Filtered archive results attach intent listeners to newly created links and use the same Astro prefetch API and URL deduplication. Hover waits 80 ms and cancels when the pointer leaves; Astro skips speculative requests on reported slow/data-saving connections. Archive touch interactions prefetch only on touch intent. No bulk viewport prefetch or third-party/social-image prefetch is enabled.
+
+The regular Garamond font preloads on every page. Netlify serves fingerprinted `/_astro/` assets with a one-year immutable browser cache; their URL changes whenever their contents change. Stable `/fonts/eb-garamond/` URLs cache for one day, then revalidate. HTML, feeds, icons, and social cards retain Netlify's default revalidation policy, so they are not pinned in a long-lived browser cache. Draft paths remain `no-store`. FastComments loads only near the comments section. These Netlify header rules take effect on deployment; a basic local static server does not apply `_headers`.

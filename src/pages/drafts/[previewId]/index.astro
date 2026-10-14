@@ -1,0 +1,22 @@
+---
+import DraftUpdates from "@/components/DraftUpdates.astro";
+import PostDetails from "@/layouts/PostDetails.astro";
+import { previewEntries, previewState } from "@/utils/drafts";
+export async function getStaticPaths() {
+  return (await previewEntries()).map(post => ({
+    params: { previewId: post.data.previewId! },
+    props: { post },
+  }));
+}
+const { post } = Astro.props;
+const state = previewState(post);
+if (state.published) return Astro.redirect(state.url, 301);
+---
+
+<PostDetails
+  post={post}
+  posts={[]}
+  seriesBySlug={{}}
+  draftVersion={state.version}
+  ><DraftUpdates slot="draft-updates" version={state.version} /></PostDetails
+>
