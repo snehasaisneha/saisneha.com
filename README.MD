@@ -157,3 +157,27 @@ Draft paths are excluded from the sitemap and have both a robots `noindex, nofol
 Post lists, main navigation, adjacent posts, pagination, and internal footer pages opt into Astro's hover/focus prefetch. Filtered archive results attach intent listeners to newly created links and use the same Astro prefetch API and URL deduplication. Hover waits 80 ms and cancels when the pointer leaves; Astro skips speculative requests on reported slow/data-saving connections. Archive touch interactions prefetch only on touch intent. No bulk viewport prefetch or third-party/social-image prefetch is enabled.
 
 The regular Garamond font preloads on every page. Netlify serves fingerprinted `/_astro/` assets with a one-year immutable browser cache; their URL changes whenever their contents change. Stable `/fonts/eb-garamond/` URLs cache for one day, then revalidate. HTML, feeds, icons, and social cards retain Netlify's default revalidation policy, so they are not pinned in a long-lived browser cache. Draft paths remain `no-store`. FastComments loads only near the comments section. These Netlify header rules take effect on deployment; a basic local static server does not apply `_headers`.
+
+
+### Film reviews
+
+Reviews are ordinary Markdown posts using the shared article layout, with a dedicated `ReviewHeader.astro` for film metadata and the original source. Add `series: [film-reviews]` to collect them at `/series/film-reviews/`; their individual URLs remain `/blog/YYYY/MM/slug/`. They appear in the main archive and search, including searches for the film title, year, and source platform.
+
+```yaml
+series: [film-reviews]
+film:
+  title: Digger
+  year: 2026
+  rating: 5 # optional; half-star increments, out of five
+  watchedOn: "2026-10-17" # optional calendar date
+  spoilers: true
+originalPublication:
+  platform: Letterboxd
+  url: https://letterboxd.com/kanmani_sneha/film/digger-2026/
+  # date: 2026-10-17 # optional; only when the publication date is known
+includeInFeed: false
+```
+
+Keep the review body verbatim when importing; source attribution is rendered separately. `pubDatetime` controls this site's listing date, while `watchedOn` records the viewing date. Ratings, viewing dates, and source publication dates are optional. Omit `film` for a regular blog post.
+
+`includeInFeed` defaults to true. Set it to false for archive imports that should not enter RSS. Independently, `tags: [archive]` hides a post from the home page while keeping its URL, series entry, and archive search result. Neither field makes a post private. An import intended to appear as a new blog entry can retain normal home visibility and feed inclusion.

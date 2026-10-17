@@ -5,6 +5,7 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import TableOfContents from "@/components/TableOfContents.astro";
 import Comments from "@/components/Comments.astro";
+import ReviewHeader from "@/components/ReviewHeader.astro";
 import PostMeta from "@/components/PostMeta.astro";
 import { writing } from "@/utils/writing";
 import { getPath } from "@/utils/getPath";
@@ -73,6 +74,14 @@ const image = isPreview
         }
         {!isPreview && <PostMeta post={info} />}
       </header>
+      {
+        post.data.film && (
+          <ReviewHeader
+            film={post.data.film}
+            originalPublication={post.data.originalPublication}
+          />
+        )
+      }
       {headings.length > 0 && <TableOfContents {headings} mobile />}
       <article class="prose">
         <Content />

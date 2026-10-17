@@ -55,6 +55,9 @@ export async function archiveWriting() {
         searchText: [
           post.title,
           post.subtitle,
+          entry.data.film?.title,
+          entry.data.film?.year,
+          entry.data.originalPublication?.platform,
           remarkPluginFrontmatter.searchText ?? "",
           ...references.map(ref =>
             [

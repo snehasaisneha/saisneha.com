@@ -46,6 +46,26 @@ const blog = defineCollection({
         modDatetime: z.date().optional().nullable(),
         title: z.string(),
         featured: z.boolean().optional(),
+        includeInFeed: z.boolean().default(true),
+        originalPublication: z
+          .object({
+            platform: z.string(),
+            url: z.string().url(),
+            date: z.coerce.date().optional(),
+          })
+          .optional(),
+        film: z
+          .object({
+            title: z.string(),
+            year: z.number().int().min(1800).max(2200),
+            rating: z.number().min(0.5).max(5).multipleOf(0.5).optional(),
+            watchedOn: z
+              .string()
+              .regex(/^\d{4}-\d{2}-\d{2}$/)
+              .optional(),
+            spoilers: z.boolean().default(false),
+          })
+          .optional(),
         draft: z.boolean().optional(),
         draftPreview: z.boolean().default(false),
         previewId: z
