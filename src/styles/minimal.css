@@ -1018,12 +1018,6 @@ li[id^="user-content-fn-"] {
   font-size: 15px;
   color: #444;
 }
-.post-series {
-  order: 1;
-}
-.post-tags {
-  order: 2;
-}
 @media (max-width: 767px) {
   .article-heading .post-meta {
     font-size: 12px;

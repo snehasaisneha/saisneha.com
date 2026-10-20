@@ -73,14 +73,14 @@ const series = [
                       {p.title}
                     </a>
                     <div class="archive-meta">
-                      {p.series.length > 0 && (
-                        <span class="post-series">
-                          Series: {p.series.map(s => s.title).join(", ")}
-                        </span>
-                      )}
                       {p.tags.length > 0 && (
                         <span class="post-tags">
                           {p.tags.map(tag => `#${tag}`).join(" ")}
+                        </span>
+                      )}
+                      {p.series.length > 0 && (
+                        <span class="post-series">
+                          Series: {p.series.map(s => s.title).join(", ")}
                         </span>
                       )}
                     </div>

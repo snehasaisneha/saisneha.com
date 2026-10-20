@@ -78,17 +78,17 @@ if (root) {
       );
       const meta = document.createElement("div");
       meta.className = "archive-meta";
-      if (p.series.length) {
-        const series = document.createElement("span");
-        series.className = "post-series";
-        series.textContent = `Series: ${p.series.map(s => s.title).join(", ")}`;
-        meta.append(series);
-      }
       if (p.tags.length) {
         const tags = document.createElement("span");
         tags.className = "post-tags";
         tags.textContent = p.tags.map(tag => `#${tag}`).join(" ");
         meta.append(tags);
+      }
+      if (p.series.length) {
+        const series = document.createElement("span");
+        series.className = "post-series";
+        series.textContent = `Series: ${p.series.map(s => s.title).join(", ")}`;
+        meta.append(series);
       }
       details.append(a, meta);
       row.append(date, details);
