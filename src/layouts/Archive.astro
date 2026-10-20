@@ -73,16 +73,16 @@ const series = [
                       {p.title}
                     </a>
                     <div class="archive-meta">
-                      {[
-                        p.tags.length
-                          ? p.tags.map(tag => `#${tag}`).join(" ")
-                          : "",
-                        p.series.length
-                          ? `Series: ${p.series.map(s => s.title).join(", ")}`
-                          : "",
-                      ]
-                        .filter(Boolean)
-                        .join(" · ")}
+                      {p.series.length > 0 && (
+                        <span class="post-series">
+                          Series: {p.series.map(s => s.title).join(", ")}
+                        </span>
+                      )}
+                      {p.tags.length > 0 && (
+                        <span class="post-tags">
+                          {p.tags.map(tag => `#${tag}`).join(" ")}
+                        </span>
+                      )}
                     </div>
                   </>
                 </div>

@@ -78,14 +78,18 @@ if (root) {
       );
       const meta = document.createElement("div");
       meta.className = "archive-meta";
-      meta.textContent = [
-        p.tags.length ? p.tags.map(tag => `#${tag}`).join(" ") : "",
-        p.series.length
-          ? `Series: ${p.series.map(s => s.title).join(", ")}`
-          : "",
-      ]
-        .filter(Boolean)
-        .join(" · ");
+      if (p.series.length) {
+        const series = document.createElement("span");
+        series.className = "post-series";
+        series.textContent = `Series: ${p.series.map(s => s.title).join(", ")}`;
+        meta.append(series);
+      }
+      if (p.tags.length) {
+        const tags = document.createElement("span");
+        tags.className = "post-tags";
+        tags.textContent = p.tags.map(tag => `#${tag}`).join(" ");
+        meta.append(tags);
+      }
       details.append(a, meta);
       row.append(date, details);
       results.append(row);

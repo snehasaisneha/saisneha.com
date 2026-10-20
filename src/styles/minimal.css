@@ -184,6 +184,8 @@ main {
 }
 .post-meta {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: 3px 16px;
   color: #666;
@@ -452,6 +454,9 @@ button:disabled {
   font-size: 15px;
 }
 .archive-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   font-size: 11px;
   color: #666;
   margin-top: 4px;
@@ -1013,10 +1018,10 @@ li[id^="user-content-fn-"] {
   font-size: 15px;
   color: #444;
 }
-.article-heading .post-series {
+.post-series {
   order: 1;
 }
-.article-heading .post-tags {
+.post-tags {
   order: 2;
 }
 @media (max-width: 767px) {
